@@ -251,6 +251,65 @@
 	};
 
 	/**
+	 * Get grid rows matching the selector.
+	 *
+	 * The selector may be an array of row indexes (for numeric items) or ids (otherwise).
+	 * The selector may be row index (if numeric).
+	 * The selector may be any jQuery compatible selector.
+	 *
+	 * If omitted all rows returned.
+	 *
+	 * @param selector the selector
+	 * @return jQuery object of <tr>'s
+	 */
+	Grid.prototype.rows = function(selector) {
+		let operator = function(rows) { return rows; };
+
+		if ($.isArray(selector)) {
+			const grid = this;
+
+			operator = function(rows) {
+				return rows.filter(function(index, elem) {
+					let result = false;
+					$.each(selector, function(_, item) {
+						if ($.isNumeric(item)) {
+							if (item == index) {
+								result = true;
+								return false;
+							}
+						}
+						else if ($.isPlainObject(item)) {
+							if (item[grid.settings.id] == $(elem).attr('row-id')) {
+								result = true;
+								return false;
+							}
+						}
+						else {
+							if (item == $(elem).attr('row-id')) {
+								result = true;
+								return false;
+							}
+						}
+					});
+					return result;
+				});
+			}
+		}
+		else if ($.isNumeric(selector)) {
+			operator = function(rows) {
+				return rows.eq(selector + 1);
+			};
+		}
+		else if (selector !== undefined) {
+			operator = function(rows) {
+				return rows.filter(selector);
+			};
+		}
+
+		return operator(this.body.find('tr'));
+	};
+
+	/**
 	 * Get grid's <thead> element.
 	 * 
 	 * @returns {jQuery} grid head
