@@ -1,0 +1,33 @@
+/**
+ * @author Yuri Plaksyuk <yuri.plaksyuk@chestnutcorp.com>
+ * @since Jan 8, 2020
+ */
+/* put jquery dialogs on top */
+.ui-front { z-index: 1000 !important; }
+.ui-dialog { z-index: 1001 !important; }
+
+.ui-front.ui-autocomplete {
+	z-index: 9000 !important;
+}
+
+.ui-menu.ui-autocomplete {
+	max-height: 400px;
+	max-width: 800px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.ui-menu.ui-autocomplete .ui-state-active,
+.ui-menu.ui-autocomplete .ui-state-active:hover {
+	font-weight: normal !important;
+}
+
+.ui-button {
+	padding: 0 .8em;
+}
+
+.ui-button .ui-button-text, .ui-button-text-only .ui-button, INPUT.ui-button {
+	font-size: 10pt;
+	padding: 0.1em;
+}
+
