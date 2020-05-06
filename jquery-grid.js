@@ -79,6 +79,7 @@
 		var grid = this;
 
 		this.settings = $.extend({
+			id: 'id',
 			attr: { },
 			data: { },
 			fixedHeader: true,
@@ -420,7 +421,7 @@
 				if (row instanceof $)
 					updateRow.call(row);
 				else if($.isPlainObject(row)) {
-					var tr = grid.body.find('tr[row-id="' + row.id + '"]');
+					var tr = grid.body.find('tr[row-id="' + row[grid.settings.id] + '"]');
 					if (tr.length > 0) {
 						grid.columns.each(function(index, col) {
 							if (row[$(col).attr('name')] !== undefined) {
@@ -769,7 +770,8 @@
 		var grid = this;
 		
 		var tr = $('<tr></tr>')
-			.attr('row-id', row.id)
+			.attr('row-id', row[grid.settings.id])
+			.data('row', row)
 			.append(this.columns.map(function(index, col) {
 				var value = $(col).data('format').call(row, row[$(col).attr('name')]);
 				if (value === undefined || value === null) value = '';
