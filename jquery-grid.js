@@ -183,7 +183,7 @@
 					event.preventDefault();
 					event.stopPropagation();
 
-					grid.lookups.val('').data('lookup-prev', '');
+					grid.lookups.val('', false).data('lookup-prev', '');
 					
 					$(this).trigger('change').blur();
 				}
@@ -272,13 +272,13 @@
 				return rows.filter(function(index, elem) {
 					let result = false;
 					$.each(selector, function(_, item) {
-						if ($.isNumeric(item)) {
+						if (typeof item === 'number') {
 							if (item == index) {
 								result = true;
 								return false;
 							}
 						}
-						else if ($.isPlainObject(item)) {
+						else if (typeof item === 'object') {
 							if (item[grid.settings.id] == $(elem).attr('row-id')) {
 								result = true;
 								return false;
@@ -295,7 +295,7 @@
 				});
 			}
 		}
-		else if ($.isNumeric(selector)) {
+		else if (typeof selector === 'number') {
 			operator = function(rows) {
 				return rows.eq(selector + 1);
 			};
@@ -636,7 +636,7 @@
 	 * @returns {Array} row IDs
 	 */
 	Grid.prototype.ids = function(selector) {
-		return this.body.find(selector || 'tr').map(function() {
+		return this.rows(selector).map(function() {
 			return $(this).attr('row-id');
 		}).get();
 	};
