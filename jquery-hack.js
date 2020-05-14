@@ -370,6 +370,11 @@ $.widget('ui.dialog', $.ui.dialog, {
 		this._super();
 	},
 
+	close: function() {
+		this._handler = null;
+		this._super();
+	},
+
 	data: function() {
 			if (arguments.length) {
 				const data = $.extend({ }, arguments[0]);
