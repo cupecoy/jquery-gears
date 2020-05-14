@@ -673,7 +673,7 @@
 
 				self.element = e;
 				self.element.on('keydown.input', function() {
-					settimeout(function() { self.set(self.get(), false); });
+					setTimeout(function() { self.set(self.get(), false); });
 				});
 			},
 			destroy: function() {
@@ -686,7 +686,7 @@
 			},
 			set: function(v, t) {
 				v = +v;
-				v = Number.isNaN(v) ? '' : v.toString();
+				v = isNaN(v) ? '' : v.toString();
 
 				if (this.element.prop('value') !== v) {
 					this.element.prop('value', v);
