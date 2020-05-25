@@ -17,7 +17,7 @@
 			scrollbarWidth_ = scrollDiv.offsetWidth - scrollDiv.clientWidth;
 
 			// Delete the DIV 
-			document.body.removeChild(scrollDiv);			
+			document.body.removeChild(scrollDiv);
 		}
 		
 		return scrollbarWidth_;
