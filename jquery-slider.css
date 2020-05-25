@@ -1,0 +1,29 @@
+/**
+ * @author Yuri Plaksyuk <yuri.plaksyuk@chestnutcorp.com>
+ * @since May 25, 2020
+ */
+
+.g-slider {
+	overflow-x: none;
+	overflow-y: auto;
+}
+
+.g-slider-top {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: white;
+}
+
+.g-slider-bottom {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: white;
+}
+
+.g-slider-header {
+	cursor: pointer;
+}
