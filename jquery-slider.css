@@ -24,6 +24,10 @@
 	background-color: white;
 }
 
+.g-slider-hidden {
+	display: none;
+}
+
 .g-slider-header {
 	cursor: pointer;
 }

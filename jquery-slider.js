@@ -12,6 +12,7 @@
 
 		top_: null,
 		bottom_: null,
+		hidden_: null,
 		sections_: null,
 		sectionsHeight_: 0,
 
@@ -34,6 +35,7 @@
 
 			this.top_ = $('<div class="g-slider-top"></div>').appendTo(this.element);
 			this.bottom_ = $('<div class="g-slider-bottom"></div>').appendTo(this.element);
+			this.hidden_ = $('<div class="g-slider-hidden"></div>').appendTo(this.element);
 
 			this.element
 				.addClass('g-slider')
@@ -44,6 +46,8 @@
 				.on('scroll resize update', function() {
 					self.update();
 				});
+
+			this.update();
 		},
 
 		show: function(section) {
@@ -68,9 +72,10 @@
 
 				if (p.top < d.offset)
 					self.top_.append(d.header);
-
-				if (p.top > height - self.sectionsHeight_ + d.offset)
+				else if (p.top > height - self.sectionsHeight_ + d.offset)
 					self.bottom_.append(d.header);
+				else
+					self.hidden_.append(d.header);
 			});
 		}
 	});
