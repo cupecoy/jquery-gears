@@ -265,7 +265,7 @@
 	Grid.prototype.rows = function(selector) {
 		let operator = function(rows) { return rows; };
 
-		if ($.isArray(selector)) {
+		if (Array.isArray(selector)) {
 			const grid = this;
 
 			operator = function(rows) {
@@ -320,7 +320,7 @@
 	
 	Grid.prototype.format = function(name, fmt) {
 		var grid = this;
-		$.each($.isArray(name) ? name : name.split(/[ ,]/), function() {
+		$.each(Array.isArray(name) ? name : name.split(/[ ,]/), function() {
 			grid.columns.filter('[name="' + this + '"]').data('format', fmt ? fmt : formatAny);
 		});
 	};
@@ -473,7 +473,7 @@
 			return data.each(updateRow);
 		}
 		else {
-			if (!$.isArray(data))
+			if (!Array.isArray(data))
 				data = [ data ];
 
 			$.each(data, function(index, row) {
@@ -806,7 +806,7 @@
 			}
 		}
 		else {
-			if (!$.isArray(data))
+			if (!Array.isArray(data))
 				data = [ data ];
 
 			data = $.map(data, function(row) {

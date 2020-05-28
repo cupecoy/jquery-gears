@@ -80,7 +80,7 @@ $.widget('f.screen', {
 			$('.' + this.widgetFullName)
 				.not(screenSelector).hide().end()
 				.filter(screenSelector).show();
-			if ($.isFunction(this.options.title))
+			if (typeof this.options.title === 'function')
 				$('.' + this.widgetFullName + '-title').empty().append(this.options.title.call());
 			else
 				$('.' + this.widgetFullName + '-title').text(this.options.title);
@@ -89,7 +89,7 @@ $.widget('f.screen', {
 
 			var self = this;
 			managerButtons.each(function() {
-				if ($.isFunction(self.options[this.id]))
+				if (typeof self.options[this.id] === 'function')
 					$(this).show();
 				else
 					$(this).hide();

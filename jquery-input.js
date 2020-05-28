@@ -213,7 +213,7 @@
 		validate: function(f) {
 			const x = function() {
 				const v = this.element.data('validate');
-				if ($.isArray(v)) return v;
+				if (Array.isArray(v)) return v;
 
 				const a = [ ]; this.element.data('validate', a);
 				if (typeof v === 'string') {

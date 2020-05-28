@@ -4,7 +4,7 @@ $.util = $.extend($.util, {
 	 */
 	schedule: function(/* args..., func, [thisArg] */) {
 		const a = Array.prototype.slice.call(arguments);
-		if ($.isFunction(a[a.length - 1])) a.push(null);
+		if (typeof a[a.length - 1] === 'function') a.push(null);
 
 		setTimeout(function() { a[a.length - 2].apply(a[a.length - 1], a); }, 0);
 	},
@@ -22,7 +22,7 @@ $.util = $.extend($.util, {
 		var execute = function() {
 			if (count-- > 0)
 				proc.call(null, { failed: function() { setTimeout(execute); }});
-			else if ($.isFunction(fail))
+			else if (typeof fail === 'function')
 				fail.call();
 		};
 		
@@ -393,7 +393,7 @@ $.widget('ui.dialog', $.ui.dialog, {
 	button: function(name, action) {
 		const button = $('.ui-dialog-buttonpane button:contains(' + name + ')', this.element.parent());
 		if (button.length > 0) {
-			if ($.isFunction(action))
+			if (typeof action === 'function')
 				button.each(action);
 			else
 				$.fn[action].call(button);
@@ -404,7 +404,7 @@ $.widget('ui.dialog', $.ui.dialog, {
 	},
 
 	handle: function(action) {
-		if ($.isFunction(this._handler))
+		if (typeof this._handler === 'function')
 			this._handler.call(this.element, action);
 	}
 });
