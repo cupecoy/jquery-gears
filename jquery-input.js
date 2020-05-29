@@ -270,15 +270,19 @@
 		message: function() {
 			const a = Array.prototype.slice.call(arguments);
 
+			var f = window.alert;
+			var k = undefined;
 			var m = a.shift();
+			if (typeof m === 'boolean')
+				f = window.confirm, k = m, m = a.shift();
+
 			var v = this.element.attr('title') || (this.element.attr('name') || 'field').toUpperCase();
 			for (var i = 0; v !== undefined; ++i) {
 				m = m.replace('{' + i + '}', v);
 				v = a.shift();
 			}
 
-			alert(m);
-			this.element.focus();
+			return k === f(m) && this.element.trigger('focus') && true;
 		},
 
 		debug_: function() {
