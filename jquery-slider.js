@@ -13,6 +13,7 @@
 		top_: null,
 		bottom_: null,
 		hidden_: null,
+		canvas_: null,
 		sections_: null,
 		sectionsHeight_: 0,
 
@@ -21,30 +22,29 @@
 
 			this._super();
 
-			this.sections_ = $(this.options.header, this.element).addClass('g-slider-header')
-				.each(function(index) {
-					$(this)
-						.attr('data-slider-index', index)
-						.data('g-slider-header', {
-							header: $(this).clone(),
-							offset: self.sectionsHeight_
-						});
+			this.element.addClass('g-slider');
 
-					self.sectionsHeight_ += $(this).outerHeight();
-				});
+			this.canvas_ = $('<div class="g-slider-canvas"></div>')
+				.on('scroll resize', function() { self.update(); })
+				.append(this.element.children())
+				.appendTo(this.element)
 
 			this.top_ = $('<div class="g-slider-top"></div>').appendTo(this.element);
 			this.bottom_ = $('<div class="g-slider-bottom"></div>').appendTo(this.element);
 			this.hidden_ = $('<div class="g-slider-hidden"></div>').appendTo(this.element);
 
-			this.element
-				.addClass('g-slider')
-				.on('click', '.g-slider-header', function() {
-					const i = $(this).attr('data-slider-index');
-					self.show(self.sections_.eq(+i));
-				})
-				.on('scroll resize update', function() {
-					self.update();
+			this.sections_ = $(this.options.header, this.canvas_).addClass('g-slider-header')
+				.each(function(index) {
+					$(this)
+						.on('click', function() {
+							self.show(self.sections_.eq(index));
+						})
+						.data('g-slider-header', {
+							header: $(this).clone(true),
+							offset: self.sectionsHeight_
+						});
+
+					self.sectionsHeight_ += $(this).outerHeight();
 				});
 
 			this.update();
@@ -54,18 +54,15 @@
 			const d = $(section).data('g-slider-header');
 			const p = $(section).position();
 
-			this.element.scrollTop(p.top - d.offset + this.element.scrollTop());
+			this.canvas_.scrollTop(p.top - d.offset + this.canvas_.scrollTop());
 		},
 
 		update: function() {
 			const self = this;
 
-			const scroll = this.element.scrollTop();
-			const height = this.element.innerHeight();
+			const scroll = this.canvas_.scrollTop();
+			const height = this.canvas_.innerHeight();
 
-			this.top_.empty().css('top', scroll + 'px');
-			this.bottom_.empty().css('bottom', -scroll + 'px');
-			
 			this.sections_.each(function() {
 				const d = $(this).data('g-slider-header');
 				const p = $(this).position();
