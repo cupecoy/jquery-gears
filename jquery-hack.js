@@ -396,7 +396,7 @@ $.widget('ui.dialog', $.ui.dialog, {
 			if (typeof action === 'function')
 				button.each(action);
 			else
-				$.fn[action].call(button);
+				button.trigger(action);
 			return true;
 		}
 		else
