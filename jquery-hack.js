@@ -395,6 +395,10 @@ $.widget('ui.dialog', $.ui.dialog, {
 		if (button.length > 0) {
 			if (typeof action === 'function')
 				button.each(action);
+			else if (action === 'show')
+				button.show();
+			else if (action === 'hide')
+				button.hide();
 			else
 				button.trigger(action);
 			return true;
