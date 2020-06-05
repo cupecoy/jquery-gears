@@ -161,6 +161,17 @@
 				else
 					next();
 			};
+		},
+
+		list: function() {
+			const list = Array.prototype.slice.call(arguments);
+
+			return function(next) {
+				if (list.indexOf($(this).input('get')) == -1)
+					$(this).input('message', '{0} must be one of {1}', list.join());
+				else
+					next();
+			};
 		}
 	});
 
@@ -219,7 +230,7 @@
 				if (typeof v === 'string') {
 					const r = /(\w+)(\(([^)]*)\))?/g;
 					for (let m = r.exec(v); m; m = r.exec(v)) {
-						const p = m[3] ? JSON.parse('[' + m[3] + ']') : [ ];
+						const p = m[3] ? JSON.parse('[' + m[3].replace(/\'/g, '"') + ']') : [ ];
 						const f = $.validator[m[1]];
 						a.push(f.apply(null, p));
 					}
