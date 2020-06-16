@@ -385,7 +385,7 @@
 		'radio': $.extend({ priority: -9 }, base, {
 			create: function(e) {
 				this.element = e;
-				this.element.on('click.input', function() { $(this).trigger('change'); });
+				//this.element.on('click.input', function() { $(this).trigger('change'); });
 			},
 			destroy: function() {
 				this.element.off('click.input');
