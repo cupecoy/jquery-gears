@@ -1,0 +1,17 @@
+/**
+ * @author Yuri Plaksyuk <yuri.plaksyuk@chestnutcorp.com>
+ * @since Jun 6, 2020
+ */
+
+.g-color-palette {
+	position: absolute;
+	display: flex;
+	background-color: lightgray;
+	border: darkgray 1px solid;
+}
+
+.g-color-palette > * {
+	width: 2em;
+	height: 1.5em;
+	margin: .2em;
+}
