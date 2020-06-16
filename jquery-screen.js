@@ -107,6 +107,10 @@ $.widget('f.screen', {
 
 	next: function() {
 		this._trigger('next');
+	},
+
+	trigger: function() {
+		this._trigger.apply(this, arguments);
 	}
 });
 
