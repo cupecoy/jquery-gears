@@ -52,7 +52,8 @@ $.screen = {
 
 $.widget('f.screen', {
 	options: {
-		title: false
+		title: false,
+		active: null
 	},
 
 	_create: function() {
@@ -75,7 +76,7 @@ $.widget('f.screen', {
 	},
 
 	show: function() {
-		if (!currentScreen || currentScreen._trigger('hide')) {
+		if (!currentScreen || currentScreen.hide()) {
 			var screenSelector = '.' + this.widgetFullName + '-' + this.element.attr('id');
 			$('.' + this.widgetFullName)
 				.not(screenSelector).hide().end()
@@ -89,16 +90,25 @@ $.widget('f.screen', {
 
 			var self = this;
 			managerButtons.each(function() {
-				if (typeof self.options[this.id] === 'function')
-					$(this).show();
-				else
-					$(this).hide();
+				$(this).toggle(typeof self.options[this.id] === 'function');
 			});
+
+			$(this.options.active).trigger('focus');
 
 			previousScreen = currentScreen;
 			currentScreen = this;
 			currentScreen._trigger('show');
 		}
+	},
+
+	hide: function() {
+		const active = this.active_();
+		if (this._trigger('hide')) {
+			this.options.active = active && active.trigger('blur');
+			return true;
+		}
+		else
+			return false;
 	},
 
 	back: function() {
@@ -111,6 +121,11 @@ $.widget('f.screen', {
 
 	trigger: function() {
 		this._trigger.apply(this, arguments);
+	},
+
+	active_: function() {
+		const active = $(document.activeElement).filter(':input');
+		return active.parents('.' + this.widgetFullName + '-canvas').index(this.element) > -1 ? active : null;
 	}
 });
 
