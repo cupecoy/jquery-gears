@@ -186,6 +186,8 @@
 					grid.lookups.val('', false).data('lookup-prev', '');
 					
 					$(this).trigger('change').blur();
+
+					grid.elem.trigger('grid:escape');
 				}
 			})
 			.on('change', function() {
