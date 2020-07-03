@@ -376,18 +376,20 @@ $.widget('ui.dialog', $.ui.dialog, {
 	},
 
 	data: function() {
-			if (arguments.length) {
-				const data = $.extend({ }, arguments[0]);
+		const args = $.arguments_opt(arguments);
+		const selector = args(function(v) { return typeof v === 'string'; }, '[name]');
+		const data = args(function(v) { return typeof v === 'object'; }, null);
 
-				$('[name]', this.element).each(function() {
-					$(this).val(data[$(this).attr('name')] || null);
-				});
-			}
-			else {
-				return $('[name]', this.element).get().reduce(function(data, elem) {
-					data[$(elem).attr('name')] = $(elem).val(); return data;
-				}, { });
-			}
+		if (data) {
+			$(selector, this.element).each(function() {
+				$(this).val(data[$(this).attr('name')] || null);
+			});
+		}
+		else {
+			return $(selector, this.element).get().reduce(function(data, elem) {
+				data[$(elem).attr('name')] = $(elem).val(); return data;
+			}, { });
+		}
 	},
 
 	button: function(name, action) {
@@ -412,6 +414,12 @@ $.widget('ui.dialog', $.ui.dialog, {
 			this._handler.call(this.element, action);
 	}
 });
+
+$.arguments_opt = function(args) {
+	var a = args, i = 0;
+
+	return function(f, v) { return f(a[i]) ? a[i++] : v; }
+};
 
 $.dialog = function(name, defs) {
 	$.fn[name] = function() {
