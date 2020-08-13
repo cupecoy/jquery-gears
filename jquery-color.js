@@ -48,6 +48,8 @@
 						self.palette_.appendTo('body')
 							.position($.extend({ of: $(this) }, self.options.position));
 					}
+					else
+						self.hide();
 				})
 				.on('blur', function() {
 					self.hide();
