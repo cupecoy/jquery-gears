@@ -67,9 +67,9 @@
 				const d = $(this).data('g-slider-header');
 				const p = $(this).position();
 
-				if (p.top < d.offset)
+				if (p.top + 2 < d.offset)
 					self.top_.append(d.header);
-				else if (p.top > height - self.sectionsHeight_ + d.offset)
+				else if (p.top - 2 > height - self.sectionsHeight_ + d.offset)
 					self.bottom_.append(d.header);
 				else
 					self.hidden_.append(d.header);
