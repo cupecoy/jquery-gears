@@ -75,6 +75,14 @@
 		return loop.call(this, $(obj).get(0));
 	};
 
+	const get_value = function(row, name) {
+		let a = name.split('.');
+		let o = row;
+		for (let n = a.shift(); n; n = a.shift())
+			o = o && o[n] || null;
+		return o;
+	};
+
 	function Grid(elem, options) {
 		var grid = this;
 
@@ -482,11 +490,12 @@
 				if (row instanceof $)
 					updateRow.call(row);
 				else if($.isPlainObject(row)) {
-					var tr = grid.body.find('tr[row-id="' + row[grid.settings.id] + '"]');
+					var tr = grid.body.find('tr[row-id="' + get_value(row, grid.settings.id) + '"]');
 					if (tr.length > 0) {
 						grid.columns.each(function(index, col) {
-							if (row[$(col).attr('name')] !== undefined) {
-								var value = $(col).data('format').call(row, row[$(col).attr('name')]);
+							const v = get_value(row, $(col).attr('name'));
+							if (v !== undefined) {
+								var value = $(col).data('format').call(row, v);
 								if (value === undefined || value === null) value = '';
 
 								tr.find('td').eq(index).empty().append(value);
@@ -494,13 +503,15 @@
 						});
 
 						$.each(grid.settings.attr,  function(name, field) {
-							if (row[field] !== undefined)
-								tr.attr(name, row[field]);
+							const v = get_value(row, field);
+							if (v !== undefined)
+								tr.attr(name, v);
 						});
 
 						$.each(grid.settings.data,  function(name, field) {
-							if (row[field] !== undefined)
-								tr.data(name, row[field]);
+							const v = get_value(row, field);
+							if (v !== undefined)
+								tr.data(name, v);
 						});
 					}
 				}
@@ -831,10 +842,10 @@
 		var grid = this;
 		
 		var tr = $('<tr></tr>')
-			.attr('row-id', row[grid.settings.id])
+			.attr('row-id', get_value(row, grid.settings.id))
 			.data('row', row)
 			.append(this.columns.map(function(index, col) {
-				var value = $(col).data('format').call(row, row[$(col).attr('name')]);
+				var value = $(col).data('format').call(row, get_value(row, $(col).attr('name')));
 				if (value === undefined || value === null) value = '';
 				return $('<td></td>').append(value).toArray();
 			}));
@@ -845,11 +856,11 @@
 			tr.attr('parent-id', row.parent_id);
 
 		$.each(this.settings.attr,  function(name, field) {
-			tr.attr(name, row[field]);
+			tr.attr(name, get_value(row, field));
 		});
 
 		$.each(this.settings.data,  function(name, field) {
-			tr.data(name, row[field]);
+			tr.data(name, get_value(row, field));
 		});
 
 		return tr;
