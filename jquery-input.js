@@ -297,7 +297,7 @@
 		},
 
 		debug_: function() {
-			if (this.debug_) {
+			if (this.debug) {
 				const a = Array.prototype.slice.call(arguments);
 				a.unshift(this.element.attr('name'));
 				console.debug.apply(console, a);
