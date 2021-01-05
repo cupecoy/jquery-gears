@@ -55,7 +55,7 @@
 			if (elem != document.body) {
 				if (elem.style.display == 'none') {
 					var visibility = elem.style.visibility;
-					elem.style.visibility = 'hidden';
+					elem.style.visibility = 'collapse';
 					elem.style.display = 'block';
 
 					var result = loop.call(this, elem.parentNode);
@@ -801,7 +801,7 @@
 			var cells = row.children('td');
 			grid.columns.each(function(index, col) {
 				if ($(col).data('grid-hidden'))
-					cells.eq(index).css({ 'visibility': 'hidden', 'white-space': 'nowrap' });
+					cells.eq(index).css({ 'visibility': 'collapse', 'white-space': 'nowrap' });
 			});
 		};
 		

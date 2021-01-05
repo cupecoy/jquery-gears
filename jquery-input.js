@@ -936,7 +936,7 @@
 			return this.each(function() {
 				if (this.input)
 					this.input.set(v, t);
-				else
+				else if (this.tagName != 'BUTTON')
 					$_fn_val.call($(this), v);
 			});
 		}
