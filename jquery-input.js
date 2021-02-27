@@ -297,7 +297,7 @@
 		},
 
 		debug_: function() {
-			if (this.debug_) {
+			if (this.debug) {
 				const a = Array.prototype.slice.call(arguments);
 				a.unshift(this.element.attr('name'));
 				console.debug.apply(console, a);
@@ -936,7 +936,7 @@
 			return this.each(function() {
 				if (this.input)
 					this.input.set(v, t);
-				else
+				else if (this.tagName != 'BUTTON')
 					$_fn_val.call($(this), v);
 			});
 		}
