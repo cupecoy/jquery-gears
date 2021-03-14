@@ -56,6 +56,10 @@
 				}
 				else if ($.isPlainObject(v))
 					$(this).children().inject(v, x);
+				else if (this.tagName === 'IMG')
+					this.src = v;
+				else if (this.tagName === 'A')
+					this.href = v;
 				else
 					$(this).append(v);
 			}
