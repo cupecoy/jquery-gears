@@ -290,7 +290,7 @@
 			if (typeof m === 'boolean')
 				f = window.confirm, k = m, m = a.shift();
 
-			var v = this.element.attr('title') || (this.element.attr('name') || 'field').toUpperCase();
+			var v = this.element.data('title') || this.element.attr('title') || (this.element.attr('name') || 'field').toUpperCase();
 			for (var i = 0; v !== undefined; ++i) {
 				m = m.replace('{' + i + '}', v);
 				v = a.shift();
