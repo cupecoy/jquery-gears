@@ -830,7 +830,7 @@
 					this.triggerChangeIf_(false, t);
 			},
 			callback: function(f) {
-				this.source = (type, term, resp) => f(term, resp);
+				this.source = function(type, term, resp) { f(term, resp); };
 			},
 			data: function() {
 				this.debug_('data');
