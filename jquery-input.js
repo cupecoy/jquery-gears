@@ -45,7 +45,7 @@
 	});
 
 	// provide `then` for backward compatibility with legacy sync approach
-	const then = (next) => typeof next === 'function' ? next() : true;
+	const then = function(next) { return typeof next === 'function' ? next() : true; };
 
 	$.validator = $.extend($.validator, {
 		mandatory: function() {
