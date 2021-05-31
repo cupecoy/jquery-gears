@@ -79,7 +79,7 @@
 		let a = name.split('.');
 		let o = row;
 		for (let n = a.shift(); n; n = a.shift())
-			o = o && o[n] || null;
+			o = o && typeof o === 'object' ? o[n] : null;
 		return o;
 	};
 
