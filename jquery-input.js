@@ -281,6 +281,10 @@
 				v.call(); // validate all the elements in the queue
 			}
 		},
+		focus: function() {
+			const element = this.element();
+			setTimeout(function() { element.trigger('focus'); }, 0);
+		},
 		message: function() {
 			const a = Array.prototype.slice.call(arguments);
 
