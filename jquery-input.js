@@ -44,6 +44,9 @@
 		}
 	});
 
+	// provide `then` for backward compatibility with legacy sync approach
+	const then = function(next) { return typeof next === 'function' ? next() : true; };
+
 	$.validator = $.extend($.validator, {
 		mandatory: function() {
 			return function(next) {
@@ -51,7 +54,7 @@
 				if (v === null || v === '')
 					$(this).input('message', '{0} is mandatory.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -61,7 +64,7 @@
 				if (l > 0 && l < minlength)
 					$(this).input('message', '{0} must contain at least {1} characters.', minlength);
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -76,10 +79,10 @@
 					else if (l > max)
 						$(this).input('message', '{0} must contain no more than {1} characters.', max);
 					else
-						next();
+						return then(next);
 				}
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -89,7 +92,7 @@
 				if (typeof v === 'number' && v <= 0)
 					$(this).input('message', '{0} must be greater than 0.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -99,7 +102,7 @@
 				if (v.length > 0 && !v.match(/^[A-Z|a-z|0-9].*$/))
 					$(this).inout('message', 'First character in {0} must be alpha-numeric.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -109,7 +112,7 @@
 				if (v.length > 0 && !v.match(/^[A-Z|a-z].*$/))
 					$(this).input('message', 'First character in {0} must be an alpha character.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -119,7 +122,7 @@
 				if (v.length > 0 && !v.match(/^\d+$/))
 					$(this).input('message', 'A number should be specified in {0}.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -129,7 +132,7 @@
 				if (v.length > 0 && (+v < minval || +v > maxval))
 					$(this).input('message', 'The value entered in {0} must be greater than or equal to {1} and less than or equal to {2}.', minval, maxval);
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -139,7 +142,7 @@
 				if (v.length > 0 && !(v.match(/^\d{1,2}$/) && ((v >= 0 && v <= 23) || v == 99)))
 					$(this).input('message', 'Hour in {0} must be a value between 00 and 23 inclusive or 99.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -149,7 +152,7 @@
 				if (v != null && v >= new Date())
 					$(this).input('message', '{0} may not be in future.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -159,7 +162,7 @@
 				if (v != null && v <= new Date())
 					$(this).input('message', '{0} may not be in past.');
 				else
-					next();
+					return then(next);
 			};
 		},
 
@@ -170,7 +173,7 @@
 				if (list.indexOf($(this).input('get')) == -1)
 					$(this).input('message', '{0} must be one of {1}', list.join());
 				else
-					next();
+					return then(next);
 			};
 		}
 	});
@@ -278,6 +281,10 @@
 				v.call(); // validate all the elements in the queue
 			}
 		},
+		focus: function() {
+			const element = this.element();
+			setTimeout(function() { element.trigger('focus'); }, 0);
+		},
 		message: function() {
 			const a = Array.prototype.slice.call(arguments);
 
@@ -287,7 +294,7 @@
 			if (typeof m === 'boolean')
 				f = window.confirm, k = m, m = a.shift();
 
-			var v = this.element.attr('title') || (this.element.attr('name') || 'field').toUpperCase();
+			var v = this.element.data('title') || this.element.attr('title') || (this.element.attr('name') || 'field').toUpperCase();
 			for (var i = 0; v !== undefined; ++i) {
 				m = m.replace('{' + i + '}', v);
 				v = a.shift();
@@ -342,15 +349,15 @@
 				const e = this.element.get(0);
 				for (var i = 0; i < e.options.length; ++i) {
 					if (v == (e.options[i].value || e.options[i].text)) {
-						this.setIndex_(e, i);
+						this.setIndex_(e, i, t);
 						return;
 					}
 				}
 
-				this.setIndex_(e, i);
+				this.setIndex_(e, i, t);
 			},
 
-			setIndex_: function(e, i) {
+			setIndex_: function(e, i, t) {
 				if (e.selectedIndex !== i) {
 					e.selectedIndex = i;
 					this.triggerChangeIf_(true, t);
@@ -744,7 +751,7 @@
 						autoFocus: false,
 
 						source: function(req, res) {
-							self.source(self.element.data('dropdown'), req.term, res);
+							self.source.call(self, self.element.data('dropdown'), req.term, res);
 						},
 
 						change: function() {
@@ -793,7 +800,7 @@
 				self.validate(function(next) {
 					self.data().then(function(d) {
 						const v = self.value_.value;
-						if ((!v && d == null) || (d && d.value == v))
+						if ((!v && d == null) || (d && (d.value || d.code) == v))
 							next();
 						else
 							self.message('{0} contains invalid value.');
@@ -826,6 +833,9 @@
 				else
 					this.triggerChangeIf_(false, t);
 			},
+			callback: function(f) {
+				this.source = function(type, term, resp) { f(term, resp); };
+			},
 			data: function() {
 				this.debug_('data');
 				return this.value_.promise;
@@ -855,10 +865,10 @@
 					else {
 						const self = this;
 						o.promise = new Promise(function(resolve) {
-							self.source(self.element.data('dropdown'), o.value, function(c) {
+							self.source(self.element.data('dropdown') || '', o.value, function(c) {
 								self.debug_('set_value_:response', o.value, c);
 								$.each(c, function() {
-									if (o.value == this.value) { resolve(o.data = this); return false; }
+									if (o.value == (this.value || this.code)) { resolve(o.data = this); return false; }
 								});
 
 								o.data || resolve(null);
@@ -906,6 +916,7 @@
 		const a = Array.prototype.slice.call(arguments, 1);
 
 		if (m === 'validate' && j.length > 1 && typeof p === 'function' && p.length == 0) {
+			console.debug('validate', j[0].id);
 			j.slice(0, 1).input(m, function() { j.slice(1).input(m, p); }); return j;
 		}
 
