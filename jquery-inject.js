@@ -30,6 +30,15 @@
 			const r = attr(this, 'data-inject-ref');
 			if (r) $(`#${r}`, x).clone().appendTo(this);
 
+			const i = attr(this, 'data-inject-if');
+			if (i) {
+				const v = path(o, i);
+				if (v === undefined) {
+					$(this).remove();
+					return;
+				}
+			}
+
 			const j = attr(this, 'data-inject');
 			if (j) {
 				const v = path(o, j);
@@ -56,6 +65,8 @@
 				}
 				else if ($.isPlainObject(v))
 					$(this).children().inject(v, x);
+				else if (v === undefined)
+					$(this).remove();
 				else if (this.tagName === 'IMG')
 					this.src = v;
 				else if (this.tagName === 'A')
