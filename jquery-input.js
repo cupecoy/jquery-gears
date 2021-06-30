@@ -478,11 +478,12 @@
 								return;
 							}
 
-							self.update_();
-							self.element.select();
-
 							event.stopPropagation();
 							event.preventDefault();
+
+							self.update_();
+							self.element.select();
+							self.element.trigger('input');
 						}
 					});
 
@@ -658,11 +659,12 @@
 							else
 								self.value_ = '' + ss * (100 * dd + cc);
 
-							self.update_();
-							self.element.select();
-
 							event.stopPropagation();
 							event.preventDefault();
+
+							self.update_();
+							self.element.select();
+							self.element.trigger('input');
 						}
 					});
 
