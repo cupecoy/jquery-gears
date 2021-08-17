@@ -191,7 +191,7 @@
 			this.element = null;
 		},
 		get: function() {
-			const v = this.element.is('input') ? this.element.prop('value') : Array.prototype.reduce.call(this.element.prop('childNodes') || [], function j(t, n) {
+			const v = this.element.is('input,textarea') ? this.element.prop('value') : Array.prototype.reduce.call(this.element.prop('childNodes') || [], function j(t, n) {
 				return t + (n.nodeType == 3 ? n.textContent : Array.prototype.reduce.call(n.childNodes || [], j, n.value || ''));
 			}, '');
 
@@ -200,7 +200,7 @@
 		set: function(v, t) {
 			v = this.normalize_(v);
 
-			if (this.element.is('input')) {
+			if (this.element.is('input,textarea')) {
 				if (this.element.prop('value') != v) {
 					this.element.prop('value', v);
 					this.triggerChangeIf_(true, t);
