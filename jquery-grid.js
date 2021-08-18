@@ -513,6 +513,8 @@
 							if (v !== undefined)
 								tr.data(name, v);
 						});
+
+						$.extend(tr.data('row'), row);
 					}
 				}
 			});

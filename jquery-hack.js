@@ -324,7 +324,10 @@ $.widget('ui.dialog', $.ui.dialog, {
 		modal: true,
 		autoOpen: false,
 		resizable: false,
-		closeOnEscape: false
+		closeOnEscape: false,
+
+		load: function() { },
+		save: function() { }
 	},
 
 	_create: function() {
@@ -384,11 +387,16 @@ $.widget('ui.dialog', $.ui.dialog, {
 			$(selector, this.element).each(function() {
 				$(this).val(data[$(this).attr('name')] || null);
 			});
+
+			this.options.load(data);
 		}
 		else {
-			return $(selector, this.element).get().reduce(function(data, elem) {
+			const data = $(selector, this.element).get().reduce(function(data, elem) {
 				data[$(elem).attr('name')] = $(elem).val(); return data;
 			}, { });
+
+			this.options.save(data);
+			return data;
 		}
 	},
 
