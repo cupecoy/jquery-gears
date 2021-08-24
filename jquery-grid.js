@@ -75,6 +75,10 @@
 		return loop.call(this, $(obj).get(0));
 	};
 
+	const in_array = function(value, array) {
+		return array.filter(function(item) { return item == value; }).length > 0;
+	};
+
 	const get_value = function(row, name) {
 		let a = name.split('.');
 		let o = row;
@@ -614,7 +618,7 @@
 					rows = selection.filter('tr');
 				else
 					rows = this.body.find('tr').filter(function() {
-						return $.inArray($(this).attr('row-id'), selection) >= 0;
+						return in_array($(this).attr('row-id'), selection);
 					});
 			
 				rows.removeClass('selected')
@@ -629,7 +633,7 @@
 					rows = selection.filter('tr');
 				else
 					rows = this.body.find('tr').filter(function() {
-						return $.inArray($(this).attr('row-id'), selection) >= 0;
+						return in_array($(this).attr('row-id'), selection);
 					});
 				
 				rows.addClass('selected')
