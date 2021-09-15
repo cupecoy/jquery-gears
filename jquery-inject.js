@@ -30,7 +30,7 @@
 			}
 
 			const r = attr(this, 'data-inject-ref');
-			if (r) $(`#${r}`, x).clone().appendTo(this);
+			if (r) $('#' + r, x).clone().appendTo(this);
 
 			const i = attr(this, 'data-inject-if');
 			if (i) {
