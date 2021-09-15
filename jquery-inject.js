@@ -17,7 +17,9 @@
 
 	jQuery.fn.inject = function(o, x) {
 		return this.each(function() {
-			for (let a of this.attributes) {
+			for (let i = this.attributes.length -1; i >= 0; --i) {
+				const a = this.attributes[i];
+
 				if (!/^data-inject/.test(a.name)) {
 					let v = a.value, s = '', r = null;
 					while ((r = v.match(/^([^$]*)\${([\w\.]+)}(.*)$/)) !== null) {
