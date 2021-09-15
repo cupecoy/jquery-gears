@@ -4,9 +4,9 @@
  */
 
 (function($) {
-	const attr = (e, n) => { const v = e.getAttribute(n); return v !== '' || e.hasAttribute(n) ? v : null; };
+	const attr = function(e, n) { const v = e.getAttribute(n); return v !== '' || e.hasAttribute(n) ? v : null; };
 
-	const path = (o, p) => {
+	const path = function(o, p) {
 		if (p !== '.') {
 			for (let r = null; o && p && (r = p.match(/^(\w+)(\.(.+))?$/)) != null; p = r[3])
 				o = o[r[1]];
