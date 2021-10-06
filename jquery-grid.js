@@ -40,7 +40,7 @@
 	 * @returns {jQuery} checkbox
 	 */
 	var formatSelect = function(value) {
-		return $('<input type="checkbox" />').attr('value', value);
+		return $('<input type="checkbox" class="grid-select" />').attr('value', value);
 	};
 	
 	/*
@@ -238,7 +238,7 @@
 				}
 			})
 //			.on('click', 'tr td:eq(' + this.settings.selectColumnIndex + ') input', function() {
-			.on('click', 'input', function(event) {
+			.on('click', 'input.grid-select', function(event) {
 				var tr = $(this).closest('tr');
 
 				switch (grid.settings.selectionMode) {
@@ -641,6 +641,8 @@
 					.each(function() {
 						$('td', this).eq(index).find('input').prop('checked', true);
 					});
+
+				this.elem.trigger('grid:select', [ rows ]);
 			}
 		}
 	};
@@ -852,7 +854,9 @@
 			.attr('row-id', get_value(row, grid.settings.id))
 			.data('row', row)
 			.append(this.columns.map(function(index, col) {
-				var value = $(col).data('format').call(row, get_value(row, $(col).attr('name')));
+				const n = $(col).attr('name');
+				const v = get_value(row, n);
+				var value = $(col).data('format').call(row, v, n);
 				if (value === undefined || value === null) value = '';
 				return $('<td></td>').append(value).toArray();
 			}));
