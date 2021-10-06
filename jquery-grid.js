@@ -497,9 +497,10 @@
 					var tr = grid.body.find('tr[row-id="' + get_value(row, grid.settings.id) + '"]');
 					if (tr.length > 0) {
 						grid.columns.each(function(index, col) {
-							const v = get_value(row, $(col).attr('name'));
+							const n = $(col).attr('name');
+							const v = get_value(row, n);
 							if (v !== undefined) {
-								var value = $(col).data('format').call(row, v);
+								var value = $(col).data('format').call(row, v, n);
 								if (value === undefined || value === null) value = '';
 
 								tr.find('td').eq(index).empty().append(value);
