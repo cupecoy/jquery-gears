@@ -735,6 +735,10 @@
 						if (self.focused_)
 							self.set_value_(self.normalize_(self.element.prop('value')));
 					})
+					.on('update.input', function() {
+						self.debug_('update');
+						self.update_value_();
+					})
 					.on('focus.input', function() {
 						self.debug_('focus');
 						self.focused_ = true;
@@ -858,27 +862,32 @@
 				if (this.value_.value != v) {
 					this.debug_('set_value_', v, d);
 
-					const o = { value: v, data: d || null };
 					if (d || !v) {
-						o.promise = new Promise(function(resolve) { resolve(o.data); });
+						const o = { value: v, data: d || null };
+
+						this.value_ = o;
+						this.value_.promise = new Promise(function(resolve) { resolve(o.data); });
 					}
 					else {
-						const self = this;
-						o.promise = new Promise(function(resolve) {
-							self.source(self.element.data('dropdown') || '', o.value, function(c) {
-								self.debug_('set_value_:response', o.value, c);
-								$.each(c, function() {
-									if (o.value == (this.value || this.code)) { resolve(o.data = this); return false; }
-								});
-
-								o.data || resolve(null);
-							});
-						});
+						this.value_ = { value: v };
+						this.update_value_();
 					}
-
-					this.value_ = o;
 				}
 				return this.value_.promise;
+			},
+			update_value_: function() {
+				const self = this, o = this.value_;
+
+				o.promise = new Promise(function(resolve) {
+					self.source(self.element.data('dropdown') || '', o.value, function(c) {
+						self.debug_('set_value_:response', o.value, c);
+						$.each(c, function() {
+							if (o.value == (this.value || this.code)) { resolve(o.data = this); return false; }
+						});
+
+						o.data || resolve(null);
+					});
+				});
 			}
 		})
 	});
