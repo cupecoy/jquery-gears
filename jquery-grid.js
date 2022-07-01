@@ -500,8 +500,11 @@
 							const n = $(col).attr('name');
 							const v = get_value(row, n);
 							if (v !== undefined) {
-								var value = $(col).data('format').call(row, v, n);
-								if (value === undefined || value === null) value = '';
+								let value = $(col).data('format').call(row, v, n);
+								if (typeof value === 'string')
+									value = document.createTextNode(value);
+								else if (value === undefined || value === null)
+									value = '';
 
 								tr.find('td').eq(index).empty().append(value);
 							}
@@ -856,8 +859,12 @@
 			.append(this.columns.map(function(index, col) {
 				const n = $(col).attr('name');
 				const v = get_value(row, n);
-				var value = $(col).data('format').call(row, v, n);
-				if (value === undefined || value === null) value = '';
+
+				let value = $(col).data('format').call(row, v, n);
+				if (typeof value === 'string')
+					value = document.createTextNode(value);
+				else if (value === undefined || value === null)
+					value = '';
 				return $('<td></td>').append(value).toArray();
 			}));
 			
