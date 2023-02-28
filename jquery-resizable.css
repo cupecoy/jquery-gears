@@ -1,0 +1,25 @@
+.ui-resizable-columns {
+    display: flex;
+}
+
+.ui-resizable-container > .ui-resizable-rows,
+.ui-resizable-container > .ui-resizable-columns {
+    height: 100%;
+}
+
+.ui-resizable-rows {
+    display: flex;
+    flex-direction: column;
+}
+
+.ui-resizer {
+    flex: 0 0 auto !important;
+}
+
+.ui-resizer-horizontal {
+    cursor: row-resize;
+}
+
+.ui-resizer-vertical {
+    cursor: col-resize;
+}
