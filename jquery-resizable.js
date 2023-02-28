@@ -26,9 +26,9 @@ $(function() {
 
         if (resizerProp.class)
             delete resizerProp.class;
-        if (resizerProp.rows.class)
+        if (resizerProp.rows &resizerProp.rows.class)
             delete resizerProp.rows.class;
-        if (resizerProp.columns.class)
+        if (resizerProp.columns && resizerProp.columns.class)
             delete resizerProp.columns.class;
 
         $.each(resizerProp, (attr, value) => {
