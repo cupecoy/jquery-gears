@@ -24,9 +24,12 @@ $(function() {
             columns : $('<div class="ui-resizer ui-resizer-vertical"></div>').css('width', columGap).addClass(resizerProp.class).addClass(resizerProp.columns ? resizerProp.columns.class : ''),
         };
 
-        delete resizerProp.class;
-        delete resizerProp.rows.class;
-        delete resizerProp.columns.class;
+        if (resizerProp.class)
+            delete resizerProp.class;
+        if (resizerProp.rows.class)
+            delete resizerProp.rows.class;
+        if (resizerProp.columns.class)
+            delete resizerProp.columns.class;
 
         $.each(resizerProp, (attr, value) => {
             if (!['object', 'array'].includes(typeof value)) {
