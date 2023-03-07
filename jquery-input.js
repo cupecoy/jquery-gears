@@ -757,7 +757,12 @@
 						autoFocus: false,
 
 						source: function(req, res) {
-							self.source.call(self, self.element.data('dropdown'), req.term, res);
+							self.source.call(self, self.element.data('dropdown'), req.term, (data) => {
+								const value = self.element.data('field') || 'code';
+								$.each(data, function() { this.value = this[value]; });
+
+								res(data);
+							});
 						},
 
 						change: function() {
