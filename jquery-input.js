@@ -819,6 +819,12 @@
 				this.element.off('.input').autocomplete('destroy');
 				this.element = null;
 			},
+			enable: function(v) {
+				this.element.autocomplete('enable');
+			},
+			disable: function(v) {
+				this.element.autocomplete('disable');
+			},
 			get: function() {
 				this.debug_('get');
 				return this.normalize_(this.value_.value);
