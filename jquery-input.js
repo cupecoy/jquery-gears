@@ -175,7 +175,7 @@
 				else
 					return then(next);
 			};
-		}
+		},
 	});
 
 
@@ -256,8 +256,8 @@
 				const v = function() {
 					const i = q.shift();
 					if (i) {
-						if (i.element.prop('disabled') || i.element.is(':hidden')) {
-							setTimeout(v, 0); // if the current element is disabled or hidden, step to the next one
+						if (i.element.prop('disabled') || i.element.is(':hidden') || i.element.is('[readonly]')) {
+							setTimeout(v, 0); // if the current element is disabled, hidden or readonly, step to the next one
 						}
 						else {
 							const a = x.call(i).slice();
