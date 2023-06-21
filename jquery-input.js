@@ -890,22 +890,8 @@
 						this.value_.promise = new Promise(function(resolve) { resolve(o.data); });
 					}
 					else {
-						// this.value_ = { value: v };
-						// this.update_value_();
-
-						const self = this, o = this.value_;
-						o.promise = new Promise(function(resolve) {
-							self.source(self.element.data('dropdown') || '', o.value, function(c) {
-								self.debug_('set_value_:response', o.value, c);
-								
-								const field = self.element.data('field');
-								$.each(c, function() {
-									if (o.value == (this.value || this.code) || (field && o.value == this[field])) { resolve(o.data = this); return false; }
-								});
-
-								o.data || resolve(null);
-							});
-						});
+						this.value_ = { value: v };
+						this.update_value_();
 					}
 				}
 				return this.value_.promise;
@@ -916,8 +902,10 @@
 				o.promise = new Promise(function(resolve) {
 					self.source(self.element.data('dropdown') || '', o.value, function(c) {
 						self.debug_('set_value_:response', o.value, c);
+						
+						const field = self.element.data('field');
 						$.each(c, function() {
-							if (o.value == (this.value || this.code)) { resolve(o.data = this); return false; }
+							if (o.value == (this.value || this.code) || (field && o.value == this[field])) { resolve(o.data = this); return false; }
 						});
 
 						o.data || resolve(null);
