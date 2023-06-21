@@ -175,7 +175,7 @@
 				else
 					return then(next);
 			};
-		}
+		},
 	});
 
 
@@ -256,8 +256,8 @@
 				const v = function() {
 					const i = q.shift();
 					if (i) {
-						if (i.element.prop('disabled') || i.element.is(':hidden')) {
-							setTimeout(v, 0); // if the current element is disabled or hidden, step to the next one
+						if (i.element.prop('disabled') || i.element.is(':hidden') || i.element.is('[readonly]')) {
+							setTimeout(v, 0); // if the current element is disabled, hidden or readonly, step to the next one
 						}
 						else {
 							const a = x.call(i).slice();
@@ -729,7 +729,8 @@
 
 			create: function(e) {
 				const self = this;
-
+				const dropdownValidate = e.data('dropdownValidate') !== false;
+				
 				self.element = e;
 				self.element
 					.on('change.input', function() {
@@ -807,16 +808,18 @@
 							return i(item.label);
 					}
 				});
-
-				self.validate(function(next) {
-					self.data().then(function(d) {
-						const v = self.value_.value;
-						if ((!v && d == null) || (d && (d.value || d.code) == v))
-							next();
-						else
-							self.message('{0} contains invalid value.');
+				
+				if(dropdownValidate)
+					self.validate(function(next) {
+						self.data().then(function(d) {
+							const v = self.value_.value;
+							const field = self.element.data('field');
+							if ((!v && d == null) || (d && (d.value || d.code) == v) || (d && field && d[field] == v))
+								next();
+							else
+								self.message('{0} contains invalid value.');
+						});
 					});
-				});
 
 				self.set_value_('');
 			},
@@ -858,10 +861,15 @@
 				return this.value_.promise;
 			},
 			format: function() {
-				if (this.element.data('format') == '1' && this.value_.data)
-					return this.value_.data.code + ' - ' + this.value_.data.desc;
-				else
-					return this.value_.value;
+				if (this.value_.data) {
+					switch(this.element.data('format')) {
+						case '1':
+							return this.value_.data.code + ' - ' + this.value_.data.desc;
+						case '2':
+							return this.value_.data.desc;
+					}
+				}
+				return this.value_.value;
 			},
 
 			update_: function() {
@@ -884,6 +892,20 @@
 					else {
 						this.value_ = { value: v };
 						this.update_value_();
+						
+						const self = this;
+						o.promise = new Promise(function(resolve) {
+							self.source(self.element.data('dropdown') || '', o.value, function(c) {
+								self.debug_('set_value_:response', o.value, c);
+								
+								const field = self.element.data('field');
+								$.each(c, function() {
+									if (o.value == (this.value || this.code) || (field && o.value == this[field])) { resolve(o.data = this); return false; }
+								});
+
+								o.data || resolve(null);
+							});
+						});
 					}
 				}
 				return this.value_.promise;
