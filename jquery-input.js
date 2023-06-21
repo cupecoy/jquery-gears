@@ -890,10 +890,10 @@
 						this.value_.promise = new Promise(function(resolve) { resolve(o.data); });
 					}
 					else {
-						this.value_ = { value: v };
-						this.update_value_();
-						
-						const self = this;
+						// this.value_ = { value: v };
+						// this.update_value_();
+
+						const self = this, o = this.value_;
 						o.promise = new Promise(function(resolve) {
 							self.source(self.element.data('dropdown') || '', o.value, function(c) {
 								self.debug_('set_value_:response', o.value, c);
