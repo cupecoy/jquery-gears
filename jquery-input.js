@@ -86,6 +86,17 @@
 			};
 		},
 
+		maxlength: function(maxlength) {
+			return function(next) {
+				const l = $(this).input('format').length;
+				if(l > 0 && l > maxlength) {
+					$(this).input('message', '{0} must contain no more than {1} characters.', maxlength);
+				}
+				else
+					return then(next);
+			}
+		},
+
 		positive: function() {
 			return function(next) {
 				const v = $(this).input('get');
@@ -409,8 +420,8 @@
 					this.element.prop('checked', checked);
 					this.triggerChangeIf_(true, t);
 				}
-				else
-					this.triggerChangeIf_(false, t);
+				// else
+				// 	this.triggerChangeIf_(false, t);
 			}
 		}),
 
