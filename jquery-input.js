@@ -820,8 +820,8 @@
 					}
 				});
 				
-				if(dropdownValidate)
-					self.validate(function(next) {
+				self.validate(function(next) {
+					if (dropdownValidate && !self.element.autocomplete('option', 'disabled')) {
 						self.data().then(function(d) {
 							const v = self.value_.value;
 							const field = self.element.data('field');
@@ -830,7 +830,10 @@
 							else
 								self.message('{0} contains invalid value.');
 						});
-					});
+					}
+					else
+						next();
+				});
 
 				self.set_value_('');
 			},
