@@ -147,6 +147,44 @@
 			};
 		},
 
+		min: function (minval, strict = false) {
+			return function (next) {
+				let v = $(this).input('get');
+				
+				if (($(this).is('.money') && v !== null) || (!$(this).is('.money') && v.length > 0)) {
+					$(this).is('.money') && (v /= 100);
+					
+					if (!strict && +v < minval)
+						$(this).input('message', 'The value entered in {0} must be greater than or equal to {1}.', minval);
+					else if (strict && +v <= minval)
+						$(this).input('message', 'The value entered in {0} must be greater than {1}.', minval);
+					else
+						return then(next);
+				}
+				else
+					return then(next);
+			}
+		},
+
+		max: function (maxval, strict = false) {
+			return function (next) { 
+				let v = $(this).input('get');
+	
+				if (($(this).is('.money') && v !== null) || (!$(this).is('.money') && v.length > 0)) {
+					$(this).is('.money') && (v /= 100);
+					
+					if (!strict && +v > maxval)
+						$(this).input('message', 'The value entered in {0} must be less than or equal to {1}.', maxval);
+					else if (strict && +v >= maxval)
+						$(this).input('message', 'The value entered in {0} must be less than {1}.', maxval);
+					else
+						return then(next);
+				}
+				else
+					return then(next);
+			}
+		},
+
 		hour: function() {
 			return function(next) {
 				const v = $(this).input('format');
