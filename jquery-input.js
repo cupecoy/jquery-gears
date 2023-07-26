@@ -880,10 +880,16 @@
 				this.element = null;
 			},
 			enable: function(v) {
-				this.element.autocomplete('enable');
+				if (v === undefined || v)
+					this.element.autocomplete('enable');
+				else
+					this.element.autocomplete('disable');
 			},
 			disable: function(v) {
-				this.element.autocomplete('disable');
+				if (v === undefined || v)
+					this.element.autocomplete('disable');
+				else
+					this.element.autocomplete('enable');
 			},
 			get: function() {
 				this.debug_('get');
