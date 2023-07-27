@@ -312,12 +312,16 @@
 							const a = x.call(i).slice();
 							const e = i.element.get(0);
 
+							const t = setTimeout(() => { console.log('Validation failed', e) }, 5000);
+
 							const n = function() {
 								const f = a.shift();
 								if (f)
 									f.call(e, n);
-								else
+								else {
+									clearTimeout(t);
 									setTimeout(v, 0);
+								}
 							};
 
 							setTimeout(n, 0);
