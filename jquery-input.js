@@ -229,6 +229,7 @@
 
 
 	const base = {
+		debug: false,
 		element: null,
 		formatter: $.format.any(),
 
