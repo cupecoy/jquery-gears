@@ -229,7 +229,6 @@
 
 
 	const base = {
-		debug: false,
 		element: null,
 		formatter: $.format.any(),
 
@@ -620,7 +619,7 @@
 			}
 		}),
 
-		'money': $.extend({ priority: -5, debug: true }, base, {
+		'money': $.extend({ priority: -5, debug: false }, base, {
 			formatter: $.format.money(),
 
 			value_: '',
@@ -775,32 +774,33 @@
 		}),
 
 		'dropdown': $.extend({ priority: -5, debug: true }, base, {
-			source: function(type, term, resp) { resp([]); }, // must be overriden
+			source: function (type, term, resp, ctx) { resp([]); }, // must be overriden
 
+			ctx_: { },
 			value_: { },
 			focused_: false,
 
-			create: function(e) {
+			create: function (e) {
 				const self = this;
 				const dropdownValidate = e.data('dropdownValidate') !== false;
 				
 				self.element = e;
 				self.element
-					.on('change.input', function() {
+					.on('change.input', function () {
 						self.debug_('change');
 						if (self.focused_)
 							self.set_value_(self.normalize_(self.element.prop('value')));
 					})
-					.on('update.input', function() {
+					.on('update.input', function () {
 						self.debug_('update');
 						self.update_value_();
 					})
-					.on('focus.input', function() {
+					.on('focus.input', function () {
 						self.debug_('focus');
 						self.focused_ = true;
 						self.update_();
 					})
-					.on('blur.input', function() {
+					.on('blur.input', function () {
 						self.debug_('blur');
 						self.focused_ = false;
 						self.update_();
@@ -810,13 +810,13 @@
 						minLength: 0,
 						autoFocus: false,
 
-						source: function(req, res) {
+						source: function (req, res) {
 							self.source.call(self, self.element.data('dropdown'), req.term, (data) => {
 								const value = self.element.data('field') || 'code';
-								$.each(data, function() { this.value = this[value]; });
+								$.each(data, function () { this.value = this[value]; });
 
 								res(data);
-							});
+							}, self.ctx_ = self.get_ctx_());
 						},
 
 						change: function() {
@@ -915,12 +915,17 @@
 				else
 					this.triggerChangeIf_(false, t);
 			},
-			callback: function(f) {
-				this.source = function(type, term, resp) { f(term, resp); };
+			callback: function (f) {
+				this.source = function (type, term, resp, ctx) { f(term, resp, ctx); };
 			},
 			data: function() {
 				this.debug_('data');
-				return this.value_.promise;
+
+				const ctx = this.get_ctx_();
+				if (JSON.stringify(ctx) != JSON.stringify(this.ctx_))
+					return this.update_value_(ctx);
+				else
+					return this.value_.promise;
 			},
 			format: function() {
 				if (this.value_.data) {
@@ -958,7 +963,7 @@
 				}
 				return this.value_.promise;
 			},
-			update_value_: function() {
+			update_value_: function (ctx) {
 				const self = this, o = this.value_;
 
 				o.promise = new Promise(function(resolve) {
@@ -971,8 +976,14 @@
 						});
 
 						o.data || resolve(null);
-					});
+					}, self.ctx_ = ctx || self.get_ctx_());
 				});
+
+				return o.promise;
+			},
+			get_ctx_: function () {
+				const ctx = this.element.data('ctx');
+				return $.extend({}, typeof ctx === 'function' ? ctx() : ctx);
 			}
 		})
 	});
@@ -1010,7 +1021,6 @@
 		const a = Array.prototype.slice.call(arguments, 1);
 
 		if (m === 'validate' && j.length > 1 && typeof p === 'function' && p.length == 0) {
-			console.debug('validate', j[0].id);
 			j.slice(0, 1).input(m, function() { j.slice(1).input(m, p); }); return j;
 		}
 
