@@ -422,6 +422,8 @@
 				this.body.prepend(data);
 
 			this._updateRows(data, this);
+
+			this.elem.trigger('grid:prepend', [data]);
 		}
 	};
 
@@ -469,6 +471,8 @@
 				this.body.append(data);
 
 			this._updateRows(data, this);
+
+			this.elem.trigger('grid:append', [data]);
 		}
 	};
 
@@ -571,6 +575,7 @@
 	Grid.prototype.clear = function() {
 		this._clearAlert();
 		this.body.empty();
+		this.elem.trigger('grid:clear');
 	};
 
 	Grid.prototype.clearLookup = function() {
