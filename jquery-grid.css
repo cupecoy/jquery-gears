@@ -32,12 +32,20 @@ table.grid span.indenter a {
   width: 19px;
 }
 
+table.grid {
+	--row-background: none;
+}
+
+table.grid tbody tr {
+	background: var(--row-background);
+}
+
 table.grid tr.selected {
-	background-color: orange !important;
+	--row-background: orange !important;
 }
 
 table.grid tbody tr:hover {
-	background: #dd0 !important;
+	--row-background: #dd0;
 }
 
 table.grid tbody tr:hover td {
