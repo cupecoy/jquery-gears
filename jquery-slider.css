@@ -4,9 +4,12 @@
  */
 
 .g-slider {
+	/* new */
+	position: relative;
+	overflow: auto;
 }
 
-.g-slider-canvas {
+/* .g-slider-canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -34,8 +37,11 @@
 
 .g-slider-hidden {
 	display: none;
-}
+} */
 
 .g-slider-header {
 	cursor: pointer;
+	/* new */
+	position: sticky;
+  	top: 0;
 }

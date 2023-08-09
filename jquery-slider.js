@@ -1,79 +1,85 @@
-/**
- * @author Yuri Plaksyuk <yuri.plaksyuk@chestnutcorp.com>
- * @since May 25, 2020
- */
+// /**
+//  * @author Michael Plaksyuk <mplaksyuk@chestnutcorp.com>
+//  * @since Aug 8, 2023
+//  */
+
 (function($) {
 	'use strict';
 
 	$.widget('gears.slider', {
 		options: {
-			header: '> :nth-child(odd)'
+			header: '> :nth-child(odd)',
+			behavior: 'smooth',
+			beforeShow: function () { },
+			afterShow: function () { },
 		},
 
-		top_: null,
-		bottom_: null,
-		hidden_: null,
-		canvas_: null,
-		sections_: null,
-		sectionsHeight_: 0,
+		slider_: null,
 
 		_create: function() {
 			const self = this;
-
 			this._super();
 
-			this.element.addClass('g-slider');
+			this.slider_ = this.element.addClass('g-slider');
 
-			this.canvas_ = $('<div class="g-slider-canvas"></div>')
-				.on('scroll resize', function() { self.update(); })
-				.append(this.element.children())
-				.appendTo(this.element)
+			const observer = new ResizeObserver(entries => { //on change size of element 
+				this.update();
+            });
 
-			this.top_ = $('<div class="g-slider-top"></div>').appendTo(this.element);
-			this.bottom_ = $('<div class="g-slider-bottom"></div>').appendTo(this.element);
-			this.hidden_ = $('<div class="g-slider-hidden"></div>').appendTo(this.element);
+			$(this.options.header, this.slider_).on('click', function (event) {
+				self.options.beforeShow.apply(this, [event, self.slider_]);
+			}).on('click', function (event) {
+				const beforeScrollTop = self.slider_.scrollTop();
+				const afterScrollTop = self.show(this);
 
-			this.sections_ = $(this.options.header, this.canvas_).addClass('g-slider-header')
-				.each(function(index) {
-					$(this)
-						.on('click', function() {
-							self.show(self.sections_.eq(index));
-						})
-						.data('g-slider-header', {
-							header: $(this).clone(true),
-							offset: self.sectionsHeight_
-						});
+				if (afterScrollTop > beforeScrollTop && self.slider_.get(0).scrollHeight - self.slider_.outerHeight() <= beforeScrollTop) {
+					event.scrollDistance = 0;
+				}
+				else {
+					event.scrollDistance = Math.floor(Math.abs(beforeScrollTop - afterScrollTop));
+				}
 
-					self.sectionsHeight_ += $(this).outerHeight();
-				});
-
-			this.update();
+				self.options.afterShow.apply(this, [event, self.slider_]);
+			}).each(function() {
+                observer.observe(this);
+            });
 		},
 
-		show: function(section) {
-			const d = $(section).data('g-slider-header');
-			const p = $(section).position();
-
-			this.canvas_.scrollTop(p.top - d.offset + this.canvas_.scrollTop());
-		},
-
-		update: function() {
+		show: function (header) {
 			const self = this;
 
-			const scroll = this.canvas_.scrollTop();
-			const height = this.canvas_.innerHeight();
+			const scrollTop = $(header).prevAll().not('.g-slider-header').get().reduce((acc, prev) => {
+				if($(prev).is(':visible'))
+					acc += $(prev).outerHeight();
+				return acc;
+			}, 0);
+			
+			self.slider_.get(0).scrollTo({
+				top: scrollTop,
+				behavior: self.options.behavior,
+			});
 
-			this.sections_.each(function() {
-				const d = $(this).data('g-slider-header');
-				const p = $(this).position();
+			return scrollTop;
+		},
 
-				if (p.top + 2 < d.offset)
-					self.top_.append(d.header);
-				else if (p.top - 2 > height - self.sectionsHeight_ + d.offset)
-					self.bottom_.append(d.header);
-				else
-					self.hidden_.append(d.header);
+		update: function () {
+			const self = this;
+			const calculateOffset_y = (headers) => {
+				return Math.floor(headers.get().reduce((acc, header) => {
+					return acc + $(header).outerHeight();
+				}, 0));
+			};
+
+			$(this.options.header, this.slider_).addClass('g-slider-header').each(function() {
+				const prevHeaders = $(this).prevAll('.g-slider-header');
+				const top = calculateOffset_y(prevHeaders);
+				$(this).css('top', top);
+				
+				const nextHeaders = $(this).nextAll('.g-slider-header');
+				const bottom = calculateOffset_y(nextHeaders);
+				$(this).css('bottom', bottom);
 			});
 		}
 	});
 })(jQuery);
+
