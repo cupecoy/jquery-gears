@@ -549,7 +549,7 @@
 
 				self.update_();
 			},
-			destory: function() {
+			destroy: function() {
 				this.element.off('.input');
 				this.element = null;
 			},
