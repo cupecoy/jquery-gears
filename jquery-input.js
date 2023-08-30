@@ -1067,6 +1067,4 @@
 		console.debug('jQuery.setValue() is deprecated');
 		return this.val(v, t);
 	};
-
-	$(function() { $('input,select,textarea,.input').input(); });
 })(jQuery);
