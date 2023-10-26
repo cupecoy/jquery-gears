@@ -1,0 +1,93 @@
+.input_range {
+    --thumb-dimension: 1em;
+    --thumb-color: rgb(255, 255, 255);
+
+    --track-between-color: rgb(104, 104, 255);
+
+    --track-height: .25em;
+    --track-width: 8em;
+    --track-color: rgb(155, 155, 155);
+    --track-radius: 2px;
+
+
+    height: var(--thumb-dimension);
+    width: fit-content;
+
+    margin: 2px;
+
+    position: relative;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+}
+
+.input_range-thumb {
+    --thumb-position: 0;
+
+    height: var(--thumb-dimension);
+    width: var(--thumb-dimension);
+
+    left: var(--thumb-position);
+
+    transform-origin: center;
+    translate: -50%;
+
+    background-color: var(--thumb-color);
+    box-shadow: 0 1px 2px 0 rgb(139, 139, 139);
+
+    position: absolute;
+
+    display: block;
+    border-radius: 50% 50%;
+
+    transform-style: preserve-3d;
+}
+
+.input_range-thumb:last-child {
+    --thumb-position: var(--track-width);  /* use only for create */
+}
+
+.input_range-thumb:first-child {
+    --after-color: var(--track-between-color);
+    --before-color: var(--track-color);
+}
+
+.input_range-thumb:last-child {
+    --after-color: var(--track-color);
+    --before-color: var(--track-between-color);
+}
+
+.input_range-thumb:first-child::before,
+.input_range-thumb:last-child::after {
+    transform: translateZ(-1px);
+}
+
+.input_range-thumb:last-child::before,
+.input_range-thumb:first-child::after {
+    transform: translateZ(-2px);
+}
+
+.input_range-thumb::before,
+.input_range-thumb::after {
+    content: "";
+    display: block;
+    position: relative;
+    height: var(--track-height);
+    border-radius: var(--track-radius);
+}
+
+/* .input_range-thumb::before, */
+.input_range-thumb:first-child::before {
+    background-color: var(--before-color);
+    width: var(--thumb-position);
+    left: calc(var(--thumb-dimension) / 2 - var(--thumb-position));
+    translate: 0 calc(50% + var(--track-height));
+}
+
+.input_range-thumb::after {
+    background-color: var(--after-color);
+    width: calc(var(--track-width) - var(--thumb-position));
+    left: 50%;
+    translate: 0 50%;
+}
