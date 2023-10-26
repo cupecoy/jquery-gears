@@ -990,13 +990,14 @@
 		'range': $.extend(base, { priority: -5, debug: true }, {
 			create: function(e) {
 				const self = this;
+				const trackWidth = e.width();
 				self.element = e.hide();
 
 				const min = +self.element.prop('min') || 0;
 				const max = +self.element.prop('max') || 100;
 				const step = +self.element.prop('step') || 1;
 				
-				const container = $('<div class="input_range"></div>').insertAfter(self.element);
+				const container = $('<div class="input_range"></div>').insertAfter(self.element).css('--track-width', `${trackWidth}px`);
 				const thumb1 = $('<span class="input_range-thumb"></span>').appendTo(container).data('value', min);
 				const thumb2 = $('<span class="input_range-thumb"></span>').appendTo(container).data('value', max);
 				const thumbs = thumb1.add(thumb2);
@@ -1011,15 +1012,17 @@
 				self.props = { min, max, step, minPosition, maxPosition, distanceToMove };
 
 				thumbs.on('mousedown', function (event) {
+					$('body').addClass('user-select-none');
+
 					const THUMB = $(this);
 
 					const v_ = THUMB.data('value');
 
 					const thumbWidth = THUMB.outerWidth();
-					const currentPos = THUMB.position().left - minPosition;
+					const currentPos = THUMB.position().left;
 					const initialX = event.clientX;
 
-					const clickX = event.originalEvent.x;
+					const clickX = event.originalEvent.x - container.offset().left;
 
 					if (clickX < currentPos || clickX > currentPos + thumbWidth) {
 						return;
@@ -1030,7 +1033,7 @@
 			
 						const deltaX = currentX - initialX;
 			
-						const x = currentPos + deltaX;
+						const x = currentPos - minPosition + deltaX;
 			
 						const value = (x - x % (self.props.distanceToMove) / self.props.step) / self.props.distanceToMove;
 			
@@ -1042,6 +1045,7 @@
 					const moveStop = (event) => {
 						$(document).off('mousemove mouseup');
 						const v = THUMB.data('value');
+						$('body').removeClass('user-select-none')
 
 						self.set_(THUMB, v, v != v_);
 					}
