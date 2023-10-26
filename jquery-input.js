@@ -1001,7 +1001,7 @@
 				const thumb2 = $('<span class="input_range-thumb"></span>').appendTo(container).data('value', max);
 				const thumbs = thumb1.add(thumb2);
 
-				self.thumbs = { from: thumb1, thru: thumb2 };
+				self.thumbs = { from: thumb1, to: thumb2 };
 
 				const minPosition = thumb1.position().left;
 				const maxPosition = thumb2.position().left;
@@ -1058,27 +1058,27 @@
 			},
 			get: function () {
 				const from = this.thumbs.from.data('value');
-				const thru = this.thumbs.thru.data('value');
-				return { from, thru };
+				const to = this.thumbs.to.data('value');
+				return { from, to };
 			},
 			set: function (v, t) {
 
 				const self = this;
 
-				let from, thru;
+				let from, to;
 				if (typeof v  == 'number') {
 					from = +v
 				}
 				else {
 					from = v[0] !== undefined && v[0] !== null ? v[0] : undefined;
-					thru = v[1] !== undefined && v[1] !== null ? v[1] : undefined;
+					to = v[1] !== undefined && v[1] !== null ? v[1] : undefined;
 				}
 
 				const v_ = self.get();
 
 				const data = [
 					{ thumb: self.thumbs.from, current_value: v_.from, value: from, priority: from !== undefined && v_.from > from ? 1 : -1 },
-					{ thumb: self.thumbs.thru, current_value: v_.thru, value: thru, priority: thru !== undefined && v_.thru < thru ? 0 : -2 }
+					{ thumb: self.thumbs.to, current_value: v_.to, value: to, priority: to !== undefined && v_.to < to ? 0 : -2 }
 				].sort((t1, t2) => { return t1.priority < t2.priority });
 				
 				$.each(data, function (_, d) {
@@ -1096,9 +1096,9 @@
 				v = Math.min(v, this.props.max);
 
 				if (thumb.is(this.thumbs.from)) {
-					v = Math.min(v, this.thumbs.thru.data('value') - this.props.step);
+					v = Math.min(v, this.thumbs.to.data('value') - this.props.step);
 				}
-				else if (thumb.is(this.thumbs.thru)) {
+				else if (thumb.is(this.thumbs.to)) {
 					v = Math.max(v, this.thumbs.from.data('value') + this.props.step);
 				}
 				
