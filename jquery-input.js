@@ -986,6 +986,129 @@
 				const ctx = this.element.data('ctx');
 				return $.extend({}, typeof ctx === 'function' ? ctx() : ctx);
 			}
+		}),
+		'range': $.extend(base, { priority: -5, debug: true }, {
+			create: function(e) {
+				const self = this;
+				self.element = e.hide();
+
+				const min = +self.element.prop('min') || 0;
+				const max = +self.element.prop('max') || 100;
+				const step = +self.element.prop('step') || 1;
+				
+				const container = $('<div class="input_range"></div>').insertAfter(self.element);
+				const thumb1 = $('<span class="input_range-thumb"></span>').appendTo(container).data('value', min);
+				const thumb2 = $('<span class="input_range-thumb"></span>').appendTo(container).data('value', max);
+				const thumbs = thumb1.add(thumb2);
+
+				self.thumbs = { from: thumb1, thru: thumb2 };
+
+				const minPosition = thumb1.position().left;
+				const maxPosition = thumb2.position().left;
+				
+				const distanceToMove = (maxPosition - minPosition) / (max - min);
+
+				self.props = { min, max, step, minPosition, maxPosition, distanceToMove };
+
+				thumbs.on('mousedown', function (event) {
+					const THUMB = $(this);
+
+					const v_ = THUMB.data('value');
+
+					const thumbWidth = THUMB.outerWidth();
+					const currentPos = THUMB.position().left - minPosition;
+					const initialX = event.clientX;
+
+					const clickX = event.originalEvent.x;
+
+					if (clickX < currentPos || clickX > currentPos + thumbWidth) {
+						return;
+					}
+
+					const moveStart = (event) => {
+						const currentX = event.clientX;
+			
+						const deltaX = currentX - initialX;
+			
+						const x = currentPos + deltaX;
+			
+						const value = (x - x % (self.props.distanceToMove) / self.props.step) / self.props.distanceToMove;
+			
+						self.set_(THUMB, value + self.props.min, false);
+
+						self.element.trigger('input');
+					}
+			
+					const moveStop = (event) => {
+						$(document).off('mousemove mouseup');
+						const v = THUMB.data('value');
+
+						self.set_(THUMB, v, v != v_);
+					}
+			
+					$(document).on('mousemove', moveStart).on('mouseup', moveStop);
+				});
+
+				self.set_(thumb1, min, false);
+				self.set_(thumb2, max, false);
+			},
+			destroy: function() {
+				this.element.off('keydown.input');
+				this.element = null;
+			},
+			get: function () {
+				const from = this.thumbs.from.data('value');
+				const thru = this.thumbs.thru.data('value');
+				return { from, thru };
+			},
+			set: function (v, t) {
+
+				const self = this;
+
+				let from, thru;
+				if (typeof v  == 'number') {
+					from = +v
+				}
+				else {
+					from = v[0] !== undefined && v[0] !== null ? v[0] : undefined;
+					thru = v[1] !== undefined && v[1] !== null ? v[1] : undefined;
+				}
+
+				const v_ = self.get();
+
+				const data = [
+					{ thumb: self.thumbs.from, current_value: v_.from, value: from, priority: from !== undefined && v_.from > from ? 1 : -1 },
+					{ thumb: self.thumbs.thru, current_value: v_.thru, value: thru, priority: thru !== undefined && v_.thru < thru ? 0 : -2 }
+				].sort((t1, t2) => { return t1.priority < t2.priority });
+				
+				$.each(data, function (_, d) {
+					if (d.value !== undefined && d.current_value != d.value)
+						self.set_(d.thumb, d.value, t);
+					else
+						self.triggerChangeIf_(false, t);
+				});
+			},
+			set_(thumb, v, t) {
+				const v_ = thumb.data('value');
+
+				v = v - v % this.props.step;
+				v = Math.max(v, this.props.min);
+				v = Math.min(v, this.props.max);
+
+				if (thumb.is(this.thumbs.from)) {
+					v = Math.min(v, this.thumbs.thru.data('value') - this.props.step);
+				}
+				else if (thumb.is(this.thumbs.thru)) {
+					v = Math.max(v, this.thumbs.from.data('value') + this.props.step);
+				}
+				
+				thumb.data('value', v);
+				thumb.css('--thumb-position', `${(v - this.props.min) * this.props.distanceToMove}px`);
+
+				if (v != v_ || t) {
+					this.triggerChangeIf_(true, t);
+				}
+			}
 		})
 	});
 
