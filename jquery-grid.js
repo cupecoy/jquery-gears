@@ -644,6 +644,14 @@
 					rows = this.body.find('tr').filter(function() {
 						return in_array($(this).attr('row-id'), selection);
 					});
+
+				if (this.settings.selectionMode == 'single') {
+					rows = rows.last();
+
+					this.body.find('tr').removeClass('selected').each(function() {
+						$('td', this).eq(index).find('input').prop('checked', false);
+					});
+				}
 				
 				rows.addClass('selected')
 					.each(function() {
