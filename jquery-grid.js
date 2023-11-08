@@ -358,7 +358,7 @@
 				var width = col.data('grid-saved-width') || 'auto';
 
 				if (this.settings.fixedHeader)
-					this.head.parent().find('colgroup col' + selector).css('width', width);
+					this.head.parent().find('colgroup col' + selector).css({ 'width': width, 'visibility': ''});
 
 				col.css('width', width).removeData('grid-saved-width');
 				
