@@ -83,6 +83,8 @@ div.grid-alert {
 	color: red;
 	font-size: 16pt;
 	font-weight: bold;
+
+	animation: flashing 1.6s linear infinite;
 }
 
 div.grid-scrollbar-measure {
@@ -91,4 +93,96 @@ div.grid-scrollbar-measure {
 	overflow: scroll;
 	position: absolute;
 	top: -9999px;
+}
+
+div.grid-loader {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+}
+div.grid-loader div {
+    transform-origin: 40px 40px;
+    animation: spin 1.2s linear infinite;
+}
+div.grid-loader div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 37px;
+    width: 5px;
+    height: 12px;
+    border-radius: 20%;
+    background: rgb(146, 162, 243);;
+}
+div.grid-loader div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -1.1s;
+}
+div.grid-loader div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -1s;
+}
+div.grid-loader div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.9s;
+}
+div.grid-loader div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.8s;
+}
+div.grid-loader div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.7s;
+}
+div.grid-loader div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.6s;
+}
+div.grid-loader div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.5s;
+}
+div.grid-loader div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.4s;
+}
+div.grid-loader div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.3s;
+}
+div.grid-loader div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.2s;
+}
+div.grid-loader div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.1s;
+}
+div.grid-loader div:nth-child(12) {
+	transform: rotate(330deg);
+	animation-delay: 0s;
+}
+@keyframes spin {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes flashing {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }

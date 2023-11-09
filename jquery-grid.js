@@ -395,6 +395,7 @@
 	 */
 	Grid.prototype.prepend = function(data, ctx) {
 		this._clearAlert();
+		this._clearLoader();
 
 		if (data) {
 			ctx = this._normalizeContext(ctx);
@@ -444,6 +445,7 @@
 	 */
 	Grid.prototype.append = function(data, ctx) {
 		this._clearAlert();
+		this._clearLoader();
 
 		if (data) {
 			ctx = this._normalizeContext(ctx);
@@ -478,6 +480,7 @@
 
 	Grid.prototype.update = function(data) {
 		this._clearAlert();
+		this._clearLoader();
 		
 		var grid = this;
 		
@@ -574,6 +577,7 @@
 
 	Grid.prototype.clear = function() {
 		this._clearAlert();
+		this._clearLoader();
 		this.body.empty();
 		this.elem.trigger('grid:clear');
 	};
@@ -687,38 +691,22 @@
 		return this.body.find('tr[row-id="' + tr.attr('parent-id') + '"]');
 	};
 
-	Grid.prototype.alert = function(message) {
+	Grid.prototype.loader = function () {
+		this._clearAlert();
+
+		const self = this;
+		const spinner = $('<div class="grid-loader"></div>')
+			.html('<div></div>'.repeat(12))
+			.appendTo(self.elem.parent());
+	}
+
+	Grid.prototype.alert = function (message) {
+		this._clearLoader();
 		var self = this;
 
 		$('<div class="grid-alert"></div>')
 				.html(message || this.settings.defaultAlertMessage)
-				.css('display', 'none')
 				.appendTo(self.elem.parent());
-
-		var toggleAlert = function() {
-			if (self.alertTimer) {
-				clearTimeout(self.alertTimer);
-				delete self.alertTimer;
-			}
-
-			var alert = self.elem.parent().find('.grid-alert');
-			if (alert.length) {
-				var timeout;
-				if (alert.is(':visible')) {
-					alert.hide();
-					timeout = 500;
-				}
-				else {
-					alert.css('top', '50%')
-					alert.show();
-					timeout = 1000;
-				}
-
-				self.alertTimer = setTimeout(toggleAlert, timeout);
-			}
-		};
-
-		toggleAlert();
 	};
 
 	/**
@@ -1001,6 +989,13 @@
 	Grid.prototype._clearOrder = function() {
 		this.head.find('span.grid-order').remove();
 	};
+
+	/**
+	 * Clears loaders icon.
+	 */
+	Grid.prototype._clearLoader = function () {
+		this.elem.parent().find('.grid-loader').remove();
+	}
 
 	/**
 	 * Clears alert message.
