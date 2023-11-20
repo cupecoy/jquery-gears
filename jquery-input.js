@@ -930,7 +930,7 @@
 			},
 			format: function() {
 				if (this.value_.data) {
-					switch(this.element.data('format')) {
+					switch (String(this.element.data('format'))) {
 						case '1':
 							return this.value_.data.code + ' - ' + this.value_.data.desc;
 						case '2':
