@@ -41,11 +41,11 @@ $.screen = {
 	},
 
 	getCurrentScreen: function() {
-		return $(currentScreen.element);
+		return $(currentScreen?.element);
 	},
 
 	getPreviousScreen: function() {
-		return $(previousScreen.element);
+		return $(previousScreen?.element);
 	}
 };
 
