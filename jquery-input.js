@@ -317,12 +317,15 @@
 							const n = function() {
 								const f = a.shift();
 								if (f)
-									f.call(e, n);
-								else {
-									clearTimeout(t);
-									setTimeout(v, 0);
-								}
+									f.call(e, n, s);
+								else 
+									s();
 							};
+
+							const s = function () {
+								clearTimeout(t);
+								setTimeout(v, 0);
+							}
 
 							setTimeout(n, 0);
 						}
