@@ -1,0 +1,8 @@
+.block {
+    padding: .5em;
+}
+
+.block .block__caption {
+    display: inline-block;
+	margin-bottom: .5em;
+}
