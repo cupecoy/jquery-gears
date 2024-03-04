@@ -36,6 +36,28 @@
         return this;
     };
 
+    /**
+     * find Item by data-name attibute or name attribute
+     * @param {Array} items 
+     * @param {String} name 
+     */
+    const findItemByName = (items, name) => {
+        let item;
+
+        //find by data-name
+        items.each(function () {
+            if ($(this).data('name') === name) {
+                item = $(this);
+                return false;
+            }
+        });
+
+        if (item !== undefined)
+            return item;
+        //find by name
+        return items.filter(`[name=${name}]`);
+    };
+
     const __create = function () {
         $(this).data('block', {
             items: '.block__item',
@@ -44,7 +66,7 @@
                     const items = this.block('items');
 
                     $.each(data, function (name, value) {
-                        items.filter(`[name="${name}"]`).val(value, triggerEvents);
+                        findItemByName(items, name).val(value, triggerEvents);
                     });
                 },
                 fetch: function () {
@@ -122,6 +144,8 @@
                     r = $(r).add(a);
                 }
                 else if (data.instances[m]) {
+                    self.triggerEvents(`block:${m}`, p);
+
                     const a = data.instances[m].apply(self, p);
 
                     if ($.isPlainObject(a))
