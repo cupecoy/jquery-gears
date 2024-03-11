@@ -75,7 +75,8 @@ $.widget('f.screen', {
 			.hide();
 	},
 
-	show: function() {
+	show: function () {
+		const params = [...arguments];
 		if (!currentScreen || currentScreen.hide()) {
 			var screenSelector = '.' + this.widgetFullName + '-' + this.element.attr('id');
 			$('.' + this.widgetFullName)
@@ -97,7 +98,7 @@ $.widget('f.screen', {
 
 			previousScreen = currentScreen;
 			currentScreen = this;
-			currentScreen._trigger('show');
+			currentScreen._trigger('show', undefined, params);
 		}
 	},
 
