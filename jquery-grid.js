@@ -638,6 +638,8 @@
 					.each(function() {
 						$('td', this).eq(index).find('input').prop('checked', false);
 					});
+				
+				this.elem.trigger('grid:select', [ rows ]);
 			}
 			else {
 				var rows;
