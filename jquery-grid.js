@@ -98,7 +98,8 @@
 			selectionMode: '', // 'single', 'miltiple
 			selectColumnIndex: null,
 			expandColumnIndex: null,
-			defaultAlertMessage: 'Search yielded no results'
+			defaultAlertMessage: 'Search yielded no results',
+			functionalColumns: []
 		}, options);
 
 		this.elem = elem;
@@ -506,7 +507,7 @@
 						grid.columns.each(function(index, col) {
 							const n = $(col).attr('name');
 							const v = get_value(row, n);
-							if (v !== undefined) {
+							if (v !== undefined || grid.settings.functionalColumns.includes(n)) {
 								let value = $(col).data('format').call(row, v, n);
 								if (typeof value === 'string')
 									value = document.createTextNode(value);
