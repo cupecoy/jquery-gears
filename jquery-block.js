@@ -144,7 +144,7 @@
                     r = $(r).add(a);
                 }
                 else if (data.instances[m]) {
-                    self.triggerEvents(`block:${m}`, p);
+                    self.trigger(`block:${m}`, p);
 
                     const a = data.instances[m].apply(self, p);
 
