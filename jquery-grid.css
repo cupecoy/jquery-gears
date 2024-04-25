@@ -3,7 +3,12 @@ table.grid thead th {
 	padding: 0 5px 1px 1px;
 }
 
-table.grid thead input {
+table.grid thead th:has(.x-SelectAll) {
+	padding: 0;
+	text-align: center;
+}
+
+table.grid thead input:not(.x-SelectAll) {
 	width: 100%;
 }
 
