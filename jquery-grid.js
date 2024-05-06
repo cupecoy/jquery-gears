@@ -99,6 +99,7 @@
 			selectColumnIndex: null,
 			expandColumnIndex: null,
 			defaultAlertMessage: 'Search yielded no results',
+			defaultMessage: 'Please, specify search criteria in the fields above',
 			functionalColumns: []
 		}, options);
 
@@ -395,7 +396,7 @@
 	 * @param {jQuery|String|Number|Object} ctx
 	 */
 	Grid.prototype.prepend = function(data, ctx) {
-		this._clearAlert();
+		this._clearMessage();
 		this._clearLoader();
 
 		if (data) {
@@ -445,7 +446,7 @@
 	 * @param {jQuery|String|Number|Object} ctx
 	 */
 	Grid.prototype.append = function(data, ctx) {
-		this._clearAlert();
+		this._clearMessage();
 		this._clearLoader();
 
 		if (data) {
@@ -480,7 +481,7 @@
 	};
 
 	Grid.prototype.update = function(data) {
-		this._clearAlert();
+		this._clearMessage();
 		this._clearLoader();
 		
 		var grid = this;
@@ -577,7 +578,7 @@
 	};
 
 	Grid.prototype.clear = function() {
-		this._clearAlert();
+		this._clearMessage();
 		this._clearLoader();
 		this.body.empty();
 		this.elem.trigger('grid:clear');
@@ -695,7 +696,7 @@
 	};
 
 	Grid.prototype.loader = function () {
-		this._clearAlert();
+		this._clearMessage();
 
 		const self = this;
 		const spinner = $('<div class="grid-loader"></div>')
@@ -709,6 +710,15 @@
 
 		$('<div class="grid-alert"></div>')
 				.html(message || this.settings.defaultAlertMessage)
+				.appendTo(self.elem.parent());
+	};
+
+	Grid.prototype.message = function (message) {
+		this._clearLoader();
+		var self = this;
+
+		$('<div class="grid-message"></div>')
+				.html(message || this.settings.defaultMessage)
 				.appendTo(self.elem.parent());
 	};
 
@@ -1005,6 +1015,14 @@
 	 */
 	Grid.prototype._clearAlert = function() {
 		this.elem.parent().find('.grid-alert').remove();
+	};
+
+	/**
+	 * Clears all messages.
+	 */
+	Grid.prototype._clearMessage = function() {
+		this.elem.parent().find('.grid-alert').remove();
+		this.elem.parent().find('.grid-message').remove();
 	};
 
 	$.fn.grid = function(method) {
