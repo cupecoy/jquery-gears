@@ -1,8 +1,8 @@
 (function($) {
 	"use strict";
-	
+
 	var scrollbarWidth_ = null;
-	
+
 	/**
 	 * Returns platform independent scrollbar width (cached).
 	 */
@@ -16,16 +16,16 @@
 			// Get the scrollbar width
 			scrollbarWidth_ = scrollDiv.offsetWidth - scrollDiv.clientWidth;
 
-			// Delete the DIV 
+			// Delete the DIV
 			document.body.removeChild(scrollDiv);
 		}
-		
+
 		return scrollbarWidth_;
 	};
 
 	/*
 	 * Default cell value formatter.
-	 * 
+	 *
 	 * @param {Object} value
 	 * @returns {String} text representation of the value
 	 */
@@ -35,17 +35,17 @@
 
 	/**
 	 * Default select column formatter.
-	 * 
+	 *
 	 * @param {String} value
 	 * @returns {jQuery} checkbox
 	 */
 	var formatSelect = function(value) {
 		return $('<input type="checkbox" class="grid-select" />').attr('value', value);
 	};
-	
+
 	/*
 	 * Evaluates callback in correct UI context even for hidden/invisible element.
-	 * 
+	 *
 	 * @param {jQuery} obj jQuery object
 	 * @param {Function} callback
 	 * @returns callback's result
@@ -71,7 +71,7 @@
 			else
 				return callback.call(this, obj);
 		};
-		
+
 		return loop.call(this, $(obj).get(0));
 	};
 
@@ -183,7 +183,7 @@
 			.on('keydown', function(event) {
 				if (event.which === $.ui.keyCode.ENTER) {
 					var $this = $(this);
-			
+
 					if ($this.data('lookup-prev') != $this.val()) {
 						$this.data('lookup-prev', $this.val());
 
@@ -198,7 +198,7 @@
 					event.stopPropagation();
 
 					grid.lookups.val('', false).data('lookup-prev', '');
-					
+
 					$(this).trigger('change').blur();
 
 					grid.elem.trigger('grid:escape');
@@ -215,7 +215,7 @@
 			})
 			.on('click', 'tr', function() {
 				var tr = $(this);
-				
+
 				if (grid.settings.selectColumnIndex === null) {
 					switch (grid.settings.selectionMode) {
 					case 'single':
@@ -254,10 +254,10 @@
 						tr.addClass('selected');
 					else
 						tr.removeClass('selected');
-					
+
 					grid.elem.trigger('grid:select', [ tr ]);
 				}
-				
+
 				event.stopPropagation();
 			});
 		};
@@ -327,13 +327,13 @@
 
 	/**
 	 * Get grid's <thead> element.
-	 * 
+	 *
 	 * @returns {jQuery} grid head
 	 */
 	Grid.prototype.head = function() {
 		return this.head;
 	};
-	
+
 	Grid.prototype.format = function(name, fmt) {
 		var grid = this;
 		$.each(Array.isArray(name) ? name : name.split(/[ ,]/), function() {
@@ -345,16 +345,22 @@
 		var col = this.columns.filter('[name="' + name + '"]');
 		if (col.length && !col.data('grid-hidden') != !hidden) {
 			col.data('grid-hidden', hidden);
-			
+
 			var selector = ':nth-child(' + (1 + col.index()) + ')';
 			if (hidden) {
-				col.data('grid-saved-width', col.css('width')).css({'width': 0, 'visibility': 'collapse'});
-				
+				var style = col.attr('style');
+				if (style && style.includes('width')) {
+					var width = style.match(/width\s*:\s*([^;]+)/)[1].trim();
+					col.data('grid-saved-width', width);
+				}
+
+				col.css({'width': '0px', 'visibility': 'collapse'});
+
 				if (this.settings.fixedHeader)
-					this.head.parent().find('colgroup col' + selector).css({'width': 0, 'visibility': 'collapse'});
-				
-				this.head.find(selector).css({ 'visibility': 'collapse', 'white-space': 'nowrap' });
-				this.body.find(selector).css({ 'visibility': 'collapse', 'white-space': 'nowrap' });
+					this.head.parent().find('colgroup col' + selector).css({'width': '0px', 'visibility': 'collapse'});
+
+				this.head.find("th" + selector).css({ 'visibility': 'collapse', 'white-space': 'nowrap' });
+				this.body.find("td" + selector).css({ 'visibility': 'collapse', 'white-space': 'nowrap' });
 			}
 			else {
 				var width = col.data('grid-saved-width') || 'auto';
@@ -363,13 +369,13 @@
 					this.head.parent().find('colgroup col' + selector).css({ 'width': width, 'visibility': ''});
 
 				col.css('width', width).removeData('grid-saved-width');
-				
-				this.head.find(selector).css({ 'visibility': '', 'white-space': '' });
-				this.body.find(selector).css({ 'visibility': '', 'white-space': '' });
+
+				this.head.find("th" + selector).css({ 'visibility': '', 'white-space': '', 'width': width });
+				this.body.find("td" + selector).css({ 'visibility': '', 'white-space': '', 'width': width });
 			}
 		}
 	};
-	
+
 	Grid.prototype.setColumnWidth = function (name, width) {
 		var col = this.columns.filter('[name="' + name + '"]');
 		col.css('width', width);
@@ -382,16 +388,16 @@
 
 	/**
 	 * Prepends data to the grid.
-	 * 
+	 *
 	 * The data argument may be either jQuary object containing 'tr' elements,
 	 * an array of records or a single record object.
-	 * 
+	 *
 	 * The optional context may be either jQuery object of parent row,
 	 * string with parent id, number of row index after which the data should be inserted, or an
 	 * object of additional row properties.
-	 * 
+	 *
 	 * Standard properties are 'parent', 'parent_id', 'index'.
-	 * 
+	 *
 	 * @param {jQuery|Array|Object} data
 	 * @param {jQuery|String|Number|Object} ctx
 	 */
@@ -411,7 +417,7 @@
 			else {
 				sibling = this.body.find('tr').not('[parent-id]');
 			}
-				
+
 			if (ctx.index !== undefined && ctx.index < sibling.length)
 				sibling = sibling.eq(ctx.index);
 			else
@@ -432,16 +438,16 @@
 
 	/**
 	 * Appends data to the grid.
-	 * 
+	 *
 	 * The data argument may be either jQuary object containing 'tr' elements,
 	 * an array of records or a single record object.
-	 * 
+	 *
 	 * The optional context may be either jQuery object of parent row,
 	 * string with parent id, number of row index after which the data should be inserted, or an
 	 * object of additional row properties.
-	 * 
+	 *
 	 * Standard properties are 'parent', 'parent_id', 'index'.
-	 * 
+	 *
 	 * @param {jQuery|Array|Object} data
 	 * @param {jQuery|String|Number|Object} ctx
 	 */
@@ -461,7 +467,7 @@
 			else {
 				sibling = this.body.find('tr').not('[parent-id]');
 			}
-				
+
 			if (ctx.index !== undefined && ctx.index < sibling.length)
 				sibling = sibling.eq(ctx.index + 1);
 			else
@@ -483,9 +489,9 @@
 	Grid.prototype.update = function(data) {
 		this._clearMessage();
 		this._clearLoader();
-		
+
 		var grid = this;
-		
+
 		var updateRow = function() {
 			grid.body.find('tr[row-id="' + $(this).attr('row-id') + '"]')
 				.empty()
@@ -537,7 +543,7 @@
 			});
 		}
 	};
-	
+
 	Grid.prototype.remove = function(row) {
 		var tr;
 		if (row instanceof $)
@@ -550,10 +556,10 @@
 			tr.remove();
 		}
 	};
-	
+
 	/**
 	 * Returns row index within a set of siblings.
-	 * 
+	 *
 	 * @param {jQuery|String} row
 	 * @returns {Number} row index
 	 */
@@ -563,14 +569,14 @@
 			tr = row.filter('tr');
 		else
 			tr = this.body.find('tr[row-id="' + row + '"]');
-		
+
 		if (tr.length) {
 			var parent_id = tr.attr('parent-id'), sibling;
 			if (parent_id)
 				sibling = this.body.find('tr[parent-id="' + parent_id + '"]');
 			else
 				sibling = this.body.find('tr').not('[parent-id]');
-			
+
 			return sibling.index(tr);
 		}
 		else
@@ -604,7 +610,7 @@
 
 	/**
 	 * Sets/gets grid selection.
-	 * 
+	 *
 	 * @param {Array|jQuery} selection new selection or nothing in order to get selection
 	 * @param {String} action 'add', 'remove' or unspecified
 	 * @returns {Array} current selection in case if get
@@ -617,7 +623,7 @@
 		}
 		else {
 			var index = this.settings.selectColumnIndex;
-			
+
 			if (action === undefined) {
 				this.body.find('tr.selected')
 					.removeClass('selected')
@@ -625,27 +631,27 @@
 						$('td', this).eq(index).find('input').prop('checked', false);
 					});
 			}
-			
+
 			if (action == 'remove') {
 				var rows;
-				
+
 				if (selection instanceof $)
 					rows = selection.filter('tr');
 				else
 					rows = this.body.find('tr').filter(function() {
 						return in_array($(this).attr('row-id'), selection);
 					});
-			
+
 				rows.removeClass('selected')
 					.each(function() {
 						$('td', this).eq(index).find('input').prop('checked', false);
 					});
-				
+
 				this.elem.trigger('grid:select', [ rows ]);
 			}
 			else {
 				var rows;
-				
+
 				if (selection instanceof $)
 					rows = selection.filter('tr');
 				else
@@ -660,7 +666,7 @@
 						$('td', this).eq(index).find('input').prop('checked', false);
 					});
 				}
-				
+
 				rows.addClass('selected')
 					.each(function() {
 						$('td', this).eq(index).find('input').prop('checked', true);
@@ -670,14 +676,14 @@
 			}
 		}
 	};
-    
-    Grid.prototype.selectedRows = function() {
+
+	Grid.prototype.selectedRows = function() {
 		return this.body.find('tr.selected');
-    };
+	};
 
 	/**
 	 * Gets selected rows IDs.
-	 * 
+	 *
 	 * @param {string} selector row selector (if ommited all rows applied)
 	 * @returns {Array} row IDs
 	 */
@@ -798,7 +804,7 @@
 
 	/**
 	 * Normalizes context returning context as object.
-	 * 
+	 *
 	 * @param {jQuery|String|Object} context
 	 * @return {Object} normalized context
 	 */
@@ -830,7 +836,7 @@
 					cells.eq(index).css({ 'visibility': 'collapse', 'white-space': 'nowrap' });
 			});
 		};
-		
+
 		if (data instanceof $) {
 			if (ctx.parent && ctx.parent.length) {
 				var parent_id = ctx.parent.attr('row-id');
@@ -850,7 +856,7 @@
 
 			data = $.map(data, function(row) {
 				var tr = (row instanceof $) ? row : grid._createRow($.extend(row, ctx));
-				
+
 				hideCells(tr);
 				return tr;
 			});
@@ -866,7 +872,7 @@
 	 */
 	Grid.prototype._createRow = function(row) {
 		var grid = this;
-		
+
 		var tr = $('<tr></tr>')
 			.attr('row-id', get_value(row, grid.settings.id))
 			.data('row', row)
@@ -881,7 +887,7 @@
 					value = '';
 				return $('<td></td>').append(value).toArray();
 			}));
-			
+
 		if (row.parent && row.parent.length)
 			tr.attr('parent-id', row.parent.attr('row-id'));
 		else if (row.parent_id)
@@ -922,7 +928,7 @@
 				if (collapsed[parent_id])
 					tr.hide();
 			}
-			
+
 			levels[tr.attr('row-id')] = level;
 
 			grid._updateIndenter(tr, level);
