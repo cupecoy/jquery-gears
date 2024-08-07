@@ -27,14 +27,15 @@ div.grid-scroll {
 	width: 100%;
 	overflow-x: hidden;
 	overflow-y: scroll;
-
-	-ms-overflow-style: none;
-	scrollbar-width: none;
+	/* TODO fix it */
+	/* -ms-overflow-style: none;
+	scrollbar-width: none; */
 }
 
-div.grid-scroll::-webkit-scrollbar {
+/* TODO fix it */
+/* div.grid-scroll::-webkit-scrollbar {
 	display: none;
-}
+} */
 
 table.grid span.indenter a {
   background-position: left center;
