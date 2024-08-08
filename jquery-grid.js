@@ -591,7 +591,8 @@
 	};
 
 	Grid.prototype.clearLookup = function() {
-		this.lookups.val('').data('lookup-prev', '');
+		this.lookups.val(null, false).data('lookup-prev', '');
+		this.elem.trigger('grid:change');
 	};
 
 	Grid.prototype.lookup = function(template) {
