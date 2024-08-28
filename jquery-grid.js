@@ -108,8 +108,8 @@
 
 		this.head = elem.find('thead');
 		if (this.settings.fixedHeader) {
-			var spacer = $('<col />');
-			var colgroup = elem.find('colgroup').clone().append(spacer);
+			// var spacer = $('<col />');
+			var colgroup = elem.find('colgroup').clone();//.append(spacer);
 
 			// create fixed header table and get its height
 			var height = actual($('<table></table>')
@@ -133,12 +133,12 @@
 			// OS X hack
 			if (navigator.platform.match(/mac/i)) {
 				// set spacer width to 0px (scrollbar takes no space)
-				spacer.css('width', '0px');
+				// spacer.css('width', '0px');
 				elem.parent().css('overflow-y', 'auto');
 			}
 			else {
 				// update spacer width (for possible scrollbar)
-				spacer.css('width', getScrollbarWidth() + 'px');
+				// spacer.css('width', getScrollbarWidth() + 'px');
 			}
 
 		}
