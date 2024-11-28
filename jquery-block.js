@@ -4,165 +4,168 @@
 //  */
 
 (function($) {
-    'use strict';
-    /**
-     * Setter and getter
-     * @param {object|undefined} items 
-     * @returns {block|items}
-     */
-    const __items = function (items) {
-        const data = this.data('block');
-        if (items === undefined)
-            return $(data.items, this);
+	'use strict';
+	/**
+	 * Setter and getter
+	 * @param {object|undefined} items
+	 * @returns {block|items}
+	 */
+	const __items = function (items) {
+		const data = this.data('block');
+		if (items === undefined)
+			return $(data.items, this);
 
-        data.items = items;
+		data.items = items;
 
-        return this;
-    };
+		return this;
+	};
 
-    /**
-     * Setter
-     * @param {object} instances 
-     * @returns {block}
-     */
-    const __instances = function (instances) {
-        if (instances === undefined)
-            return this;
+	/**
+	 * Setter
+	 * @param {object} instances
+	 * @returns {block}
+	 */
+	const __instances = function (instances) {
+		if (instances === undefined)
+			return this;
 
-        const data = this.data('block');
+		const data = this.data('block');
 
-        data.instances = Object.setPrototypeOf(instances, data.instances);
+		data.instances = Object.setPrototypeOf(instances, data.instances);
 
-        return this;
-    };
+		return this;
+	};
 
-    /**
-     * find Item by data-name attibute or name attribute
-     * @param {Array} items 
-     * @param {String} name 
-     */
-    const findItemByName = (items, name) => {
-        let item;
+	/**
+	 * find Item by data-name attibute or name attribute
+	 * @param {Array} items
+	 * @param {String} name
+	 */
+	const findItemByName = (items, name) => {
+		let item;
 
-        //find by data-name
-        items.each(function () {
-            if ($(this).data('name') === name) {
-                item = $(this);
-                return false;
-            }
-        });
+		//find by data-name
+		items.each(function () {
+			if ($(this).data('name') === name) {
+				item = $(this);
+				return false;
+			}
+		});
 
-        if (item !== undefined)
-            return item;
-        //find by name
-        return items.filter(`[name=${name}]`);
-    };
+		if (item !== undefined)
+			return item;
+		//find by name
+		return items.filter(`[name=${name}]`);
+	};
 
-    const __create = function () {
-        $(this).data('block', {
-            items: '.block__item',
-            instances: {
-                set: function (data, triggerEvents) {
-                    const items = this.block('items');
+	const __create = function () {
+		$(this).data('block', {
+			items: '.block__item',
+			instances: {
+				set: function (data, triggerEvents) {
+					const items = this.block('items');
 
-                    $.each(data, function (name, value) {
-                        findItemByName(items, name).val(value, triggerEvents);
-                    });
-                },
-                fetch: function () {
-                    const items = this.block('items');
+					$.each(data, function (name, value) {
+						findItemByName(items, name).val(value, triggerEvents);
+					});
+				},
+				fetch: function () {
+					const items = this.block('items');
 
-                    return items.get().reduce(function (acc, item) {
-                        const name = $(item).attr('name');
-                        const value = $(item).val();
-                        acc[name] = value;
-                        
-                        return acc;
-                    }, {});
-                },
-                get: function () {
-                    
-                },
-                clear: function (triggerEvents) {
-                    const items = this.block('items');
+					return items.get().reduce(function (acc, item) {
+						const name = $(item).attr('name');
+						const value = $(item).val();
+						acc[name] = value;
 
-                    items.val(null, triggerEvents);
+						return acc;
+					}, {});
+				},
+				get: function () {
 
-                    items.filter('[checked]').each(function () {
-                        const value = this.value;
-                        $(this).val(value, triggerEvents);
-                    });
-                }
-            }
-        });
-    };
+				},
+				clear: function (triggerEvents) {
+					const items = this.block('items');
 
-    const FUNCTIONS = { //this functions returns jquery elements
-        items: __items,
-        instances: __instances
-    };
-    
-    $.fn.block = function () {
-        const e = this;
-        const m = arguments[0];
-        const p = Array.prototype.slice.call(arguments, 1);
+					items.val(null, triggerEvents);
 
-        let r;
+					items.filter('[checked]').each(function () {
+						const value = this.value;
+						$(this).val(value, triggerEvents);
+					});
+				}
+			}
+		});
+	};
 
-        e.each(function () {
-            const self = $(this);
+	const FUNCTIONS = { //this functions returns jquery elements
+		items: __items,
+		instances: __instances
+	};
 
-            let data = self.data('block');
-            if (!data)
-                __create.apply(self);
+	$.fn.block = function () {
+		const e = this;
+		const m = arguments[0];
+		const p = Array.prototype.slice.call(arguments, 1);
 
-            if ($.isPlainObject(m)) {
-                const { items, instances } = m;
+		let r;
 
-                if (items !== undefined) {
-                    const a = __items.apply(self, [items]);
-                    r = $(r).add(a); // TODO: find another solution to collect results
-                }
+		e.each(function () {
+			const self = $(this);
 
-                if (instances !== undefined && $.isPlainObject(instances)) {
-                    const a = __instances.apply(self, [instances]);
-                    r = $(r).add(a);
-                }
+			let data = self.data('block');
+			if (!data)
+				__create.apply(self);
 
-                if (instances === undefined && items === undefined) {
-                    const a = __instances.apply(self, [m]);
-                    r = $(r).add(a);
-                }
+			if ($.isPlainObject(m)) {
+				const { items, instances } = m;
 
-                return;
-            }
-            else if (m !== undefined) {
-                data = self.data('block');
+				if (items !== undefined) {
+					const a = __items.apply(self, [items]);
+					r = $(r).add(a); // TODO: find another solution to collect results
+				}
 
-                if (FUNCTIONS[m]) {
-                    const a = FUNCTIONS[m].apply(self, p);
-                    r = $(r).add(a);
-                }
-                else if (data.instances[m]) {
-                    self.trigger(`block:${m}`, p);
+				if (instances !== undefined && $.isPlainObject(instances)) {
+					const a = __instances.apply(self, [instances]);
+					r = $(r).add(a);
+				}
 
-                    const a = data.instances[m].apply(self, p);
+				if (instances === undefined && items === undefined) {
+					const a = __instances.apply(self, [m]);
+					r = $(r).add(a);
+				}
 
-                    if ($.isPlainObject(a))
-                        r = { ...(r || {}), ...a };
-                    else
-                        r = a;
-                }
-                else
-                    r = undefined;
-            }
-            else {
-                r = $(r).add(self);
-            }
-        });
+				return;
+			}
+			else if (m !== undefined) {
+				data = self.data('block');
 
-        return r;
-    };
+				if (FUNCTIONS[m]) {
+					const a = FUNCTIONS[m].apply(self, p);
+					r = $(r).add(a);
+				}
+				else if (data.instances[m]) {
+					self.trigger(`block:${m}`, p);
+
+					const a = data.instances[m].apply(self, p);
+
+					if ($.isPlainObject(a))
+						r = { ...(r || {}), ...a };
+					else
+						r = a;
+				}
+				else if (data[m]) {
+					return data[m];
+				}
+				else
+					r = undefined;
+			}
+			else {
+				r = $(r).add(self);
+			}
+		});
+
+		return r;
+	};
 
 })(jQuery);
 
