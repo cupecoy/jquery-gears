@@ -58,6 +58,10 @@
 		return items.filter(`[name=${name}]`);
 	};
 
+	const getItemName = (item) => {
+		return $(item).data('name') ?? $(item).attr('name');
+	};
+
 	const __create = function () {
 		$(this).data('block', {
 			items: '.block__item',
@@ -73,7 +77,7 @@
 					const items = this.block('items');
 
 					return items.get().reduce(function (acc, item) {
-						const name = $(item).attr('name');
+						const name = getItemName(item);
 						const value = $(item).val();
 						acc[name] = value;
 
