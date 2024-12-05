@@ -70,7 +70,9 @@
 					const items = this.block('items');
 
 					$.each(data, function (name, value) {
-						findItemByName(items, name).val(value, triggerEvents);
+						const item = findItemByName(items, name);
+						if (item.is('.money')) value = +value;
+						item.val(value, triggerEvents);
 					});
 				},
 				fetch: function () {
@@ -157,7 +159,7 @@
 					else
 						r = a;
 				}
-				else if (data[m]) {
+				else if (data[m] !== undefined) {
 					return data[m];
 				}
 				else
