@@ -120,9 +120,8 @@
 				.appendTo(elem.parent())
 				.append(colgroup)
 				.append(this.head),
-				function(obj) { return obj.height(); });
-
-			height = 50;
+				function (obj) { return obj.height(); });
+			
 			// create grid scrolling area
 			elem.wrap('<div class="grid-scroll" style="top: ' + height + 'px;"></div>');
 
