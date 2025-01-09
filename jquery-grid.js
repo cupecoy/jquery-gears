@@ -108,8 +108,17 @@
 
 		this.head = elem.find('thead');
 		if (this.settings.fixedHeader) {
-			var spacer = $('<col />');
 			var colgroup = elem.find('colgroup').clone();
+
+			// OS X hack
+			if (navigator.platform.match(/mac/i)) {
+				// set spacer width to 0px (scrollbar takes no space)
+				elem.parent().css('overflow-y', 'auto');
+			}
+			else {
+				const spacer = $('<col />').css('width', getScrollbarWidth());
+				colgroup.append(spacer);
+			}
 
 			// create fixed header table and get its height
 			var height = actual($('<table></table>')
@@ -125,39 +134,11 @@
 			// create grid scrolling area
 			elem.wrap('<div class="grid-scroll" style="top: ' + height + 'px;"></div>');
 
-			// OS X hack
-			if (!navigator.platform.match(/mac/i)) {
-				// set spacer width to 0px (scrollbar takes no space)
-				// spacer.css('width', '0px');
-				elem.parent().css('overflow-y', 'auto');
-			}
-			else {
-				// update spacer width (for possible scrollbar)
-				colgroup.append(spacer)
-				spacer.css('width', getScrollbarWidth() - 2 + 'px');
-			}
-
 			// make TH count correspond to COL count
-			var trs = this.head.find('tr');
+			var tr = this.head.find('tr:first');
+			while (tr.children().length < colgroup.children().length)
+				tr.append('<th></th>');
 
-			let cc = new Array(trs.length).fill(0);
-
-			trs.each(function (i, tr) {
-				$(tr).find('th').each(function (_, th) {
-					const rowspan = $(th).attr('rowspan') ?? 1;
-					const colspan = $(th).attr('colspan') ?? 1;
-					for (let j = i; j < i + (+rowspan); j++)
-						cc[j] += +colspan;
-				});
-			});
-
-			const neededLength = colgroup.children().length;
-			trs.each(function (i, tr) {
-				$(tr).append('<th></th>'.repeat(neededLength - cc[i]));
-			});
-
-			// while (tr.children().length < colgroup.children().length)
-			// 	tr.append('<th></th>');
 		}
 
 		this.head.find('*[name][order="true"]')
