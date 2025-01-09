@@ -32,10 +32,10 @@ div.grid-scroll {
 	scrollbar-width: none; */
 }
 /* 
-TODO fix it
+TODO fix it*/
 div.grid-scroll::-webkit-scrollbar {
 	display: none;
-} */
+} 
 
 table.grid span.indenter a {
   background-position: left center;
