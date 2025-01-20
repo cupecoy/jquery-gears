@@ -679,7 +679,7 @@
 				else {
 					let rows = this.rows();
 					if (selection instanceof $)
-						rows = rows.find(selection);
+						rows = rows.filter(selection);
 					else
 						rows = rows.filter((_, row) => selection.includes($(row).attr('row-id')));
 
