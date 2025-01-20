@@ -80,11 +80,13 @@
 			grid.#head = grid.#elem.find('thead');
 
 			grid.#head.find('*[name][order="true"]').on('click', function (event) {
-				if (event.altKey || !event.metaKey)
+				if (event.altKey)
 					grid.#clearOrder();
 				else {
 					const name = $(this).attr('name');
 					const order = grid.#getOrder();
+
+					// if (!event.metaKey) grid.#clearOrder();
 
 					grid.#setOrder(name, !order[name]);
 				}
@@ -489,7 +491,7 @@
 
 		#setOrder(name, asc) {
 			this.#clearOrder();
-			const column = this.#head.find(`*[name=${name}][order=true]`).first();
+			const column = this.#head.find(`*[name=${name}][order=true]`);
 
 			column.append($(`<span class="grid-order">${asc ? this.#settings.orderIconAsk : this.#settings.orderIconDesc}</span>`));
 			column.data('order', asc);

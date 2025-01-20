@@ -36,6 +36,11 @@
 		border-spacing: 0;
 	
 		& thead {
+			& th {
+				&[order=true] {
+					cursor: pointer;
+				}
+			}
 			& input {
 				width: 100%;
 				box-sizing: border-box;
