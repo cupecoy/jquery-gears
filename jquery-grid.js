@@ -106,7 +106,7 @@
 				.on('click', 'tr', function () {
 					const tr = $(this);
 
-					if ((grid.#settings.selectionMode == 'single' && !tr.hasClass('selected')) || grid.#settings.selectionMode == 'single')
+					if ((grid.#settings.selectionMode == 'single' && !tr.hasClass('selected')) || grid.#settings.selectionMode == 'multiple')
 						grid.#toggleRow(tr);
 
 					grid.#elem.trigger('grid:select', [tr]);
