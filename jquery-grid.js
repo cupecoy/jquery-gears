@@ -80,14 +80,13 @@
 			grid.#head = grid.#elem.find('thead');
 
 			grid.#head.find('*[name][order="true"]').on('click', function (event) {
-				if (event.altKey || !event.metaKey) {
-					grid._clearOrder();
-				}
+				if (event.altKey || !event.metaKey)
+					grid.#clearOrder();
 				else {
 					const name = $(this).attr('name');
-					const order = grid._getOrder();
+					const order = grid.#getOrder();
 
-					grid._setOrder(name, !order[name]);
+					grid.#setOrder(name, !order[name]);
 				}
 
 				grid.#elem.trigger('grid:change');
@@ -400,7 +399,7 @@
 				else
 					this.#body.append(rows);
 
-				this.#elem.trigger('grid:append', [ rows ]);
+				this.#elem.trigger(prepend ? 'grid:prepend' : 'grid:append', [ rows ]);
 			}
 		}
 
@@ -673,11 +672,11 @@
 			if (selection === undefined)
 				return this.selectedRows().map((_, row) => $(row).attr('row-id')).get();
 			else {
-				if (action === undefined) {
-					this.selectedRows().each((_, row) => this.#unselectRow($(row)));
-				}
+				let rows;
+				if (action === undefined)
+					rows = this.selectedRows().each((_, row) => this.#unselectRow($(row)));
 				else {
-					let rows = this.rows();
+					rows = this.rows();
 					if (selection instanceof $)
 						rows = rows.filter(selection);
 					else
@@ -688,6 +687,8 @@
 					else if (action == 'add')
 						rows.each((_, row) => this.#selectRow($(row)));
 				}
+
+				this.#elem.trigger('grid:select', [ rows ]);
 			}
 		}
 
