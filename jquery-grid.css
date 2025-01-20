@@ -8,7 +8,7 @@
 	
 		height: 100%;
 	
-		overflow-y: auto !important;
+		overflow-y: scroll !important;
 		overflow-x: hidden !important;
 	
 		position: relative;
