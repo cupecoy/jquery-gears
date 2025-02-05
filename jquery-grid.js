@@ -324,12 +324,15 @@
 			}
 
 			if (this.#settings.expandColumnIndex !== null) {
-				const level =  parent ? (parent.data('level') ?? 0) : 0;
+				const level =  parent ? (parent.data('level') ?? 0) + 1 : 0;
 				this.#createIndenter(row, level);
 			}
 
-			if (parent_id)
+			if (parent_id) {
 				row.attr('parent-id', parent_id);
+				
+				row.toggleClass('grid-hidden', parent.hasClass('collapsed'));
+			}
 
 			$.each(this.#settings.attr, function (name, field) {
 				row.attr(name, get_value(data, field));
@@ -382,7 +385,8 @@
 				else
 					siblings = this.#body.find('tr:not([parent-id])');
 
-				if (siblings.length) {
+				
+				if (parent && siblings.length) {
 					let sibling;
 
 					if (ctx.index !== undefined && ctx.index < siblings.length)
@@ -393,6 +397,14 @@
 						sibling = siblings.last();
 
 					prepend ? sibling.before(rows) : sibling.after(rows);
+				}
+				else if (siblings.length) {
+					if (ctx.index !== undefined && ctx.index < siblings.length)
+						siblings.eq(ctx.index + +(!prepend)).before(rows)
+					else if (prepend)
+						this.#body.prepend(rows);
+					else
+						this.#body.append(rows);						
 				}
 				else if (parent)
 					parent.after(rows);
@@ -545,9 +557,14 @@
 			if (col.length && Boolean(col.data('grid-hidden')) !== hidden) {
 				col.data('grid-hidden', hidden);
 
-				col.toggleClass('grid-hidden', hidden);
-				this.#head.find(`th:nth-child(${col.index() + 1})`).toggleClass('grid-hidden', hidden);
-				this.#body.find(`td:nth-child(${col.index() + 1})`).toggleClass('grid-hidden', hidden);
+				if (this.#columns_visibility[name] !== undefined)
+					this.#columns_visibility[name] = !hidden;
+
+				const i = col.index() + 1;
+				col.add(this.#head.find(`> tr > th:nth-child(${i}), > tr > td:nth-child(${i})`))
+					.add(this.#body.find(`> tr > th:nth-child(${i}), > tr > td:nth-child(${i})`))
+					.add(this.#foot.find(`> tr > th:nth-child(${i}), > tr > td:nth-child(${i})`))
+					.toggleClass('grid-hidden', hidden);
 			}
 		}
 
