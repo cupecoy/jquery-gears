@@ -107,8 +107,10 @@
 				.on('click', 'tr', function () {
 					const tr = $(this);
 
-					if (grid.#settings.selectionMode == 'single' && !tr.hasClass('selected'))
+					if (grid.#settings.selectColumnIndex === null)
 						grid.#toggleRow(tr);
+					else if (grid.#settings.selectionMode == 'single')
+						grid.#selectRow(tr);
 
 					grid.#elem.trigger('grid:select', [tr]);
 				})
@@ -330,7 +332,7 @@
 
 			if (parent_id) {
 				row.attr('parent-id', parent_id);
-				
+
 				row.toggleClass('grid-hidden', parent.hasClass('collapsed'));
 			}
 
