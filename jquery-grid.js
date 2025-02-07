@@ -769,12 +769,20 @@
 		}
 	}
 
+	const grids = [];
+
 	$.fn.grid = function (method) {
 		let rval, args = Array.prototype.slice.call(arguments, 1);
 
 		let error = false;
 		$(this).each(function () {
 			const t = $(this);
+			if (!grids.includes(t)) {
+				grids.push(t);
+				console.clear();
+				console.table(grids);
+			}
+
 			if ($.isPlainObject(method) || !method || t.data('grid') === undefined) {
 				t.data('grid', new Grid(t, method));
 			} // init grid
