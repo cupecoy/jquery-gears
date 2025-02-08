@@ -775,10 +775,14 @@
 		let error = false;
 		$(this).each(function () {
 			const t = $(this);
-			if ($.isPlainObject(method) || !method || t.data('grid') === undefined) {
+			if ($.isPlainObject(method) || !method) {
 				t.data('grid', new Grid(t, method));
-			} // init grid
-			else if (Grid.prototype[method]) {
+				return true;
+			}
+			else if (t.data('grid') === undefined)
+				t.data('grid', new Grid(t, {}));
+
+			if (Grid.prototype[method]) {
 				const grid = t.data('grid');
 				rval = Grid.prototype[method].apply(grid, args);
 				return rval === undefined;
