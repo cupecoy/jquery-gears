@@ -3,6 +3,8 @@
 }
 
 .grid-wrapper {
+	position: relative;
+	
 	&.grid-scroll {
 		display: inline-block;
 	
@@ -10,8 +12,6 @@
 	
 		overflow-y: scroll !important;
 		overflow-x: hidden !important;
-	
-		position: relative;
 	
 		background-color: inherit;
 		& table.grid {
