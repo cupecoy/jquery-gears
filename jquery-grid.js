@@ -315,6 +315,14 @@
 				}
 			});
 
+			$.each(this.#settings.attr, function (name, field) {
+				row.attr(name, get_value(data, field));
+			});
+
+			$.each(this.#settings.data, function (name, field) {
+				row.data(name, get_value(data, field));
+			});
+
 			let parent, parent_id;
 			if (data.parent && data.parent.length) {
 				parent = data.parent;
@@ -335,14 +343,6 @@
 
 				row.toggleClass('grid-hidden', parent.length ? parent.hasClass('collapsed') : true);
 			}
-
-			$.each(this.#settings.attr, function (name, field) {
-				row.attr(name, get_value(data, field));
-			});
-
-			$.each(this.#settings.data, function (name, field) {
-				row.data(name, get_value(data, field));
-			});
 
 			return row;
 		}
