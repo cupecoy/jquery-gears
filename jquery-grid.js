@@ -333,7 +333,7 @@
 			if (parent_id) {
 				row.attr('parent-id', parent_id);
 
-				row.toggleClass('grid-hidden', parent ? parent.hasClass('collapsed') : true);
+				row.toggleClass('grid-hidden', parent.length ? parent.hasClass('collapsed') : true);
 			}
 
 			$.each(this.#settings.attr, function (name, field) {
