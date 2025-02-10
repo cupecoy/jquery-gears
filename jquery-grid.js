@@ -333,7 +333,7 @@
 			if (parent_id) {
 				row.attr('parent-id', parent_id);
 
-				row.toggleClass('grid-hidden', parent.hasClass('collapsed'));
+				row.toggleClass('grid-hidden', parent ? parent.hasClass('collapsed') : true);
 			}
 
 			$.each(this.#settings.attr, function (name, field) {
@@ -387,7 +387,7 @@
 				else
 					siblings = this.#body.find('tr:not([parent-id])');
 
-				
+
 				if (parent && siblings.length) {
 					let sibling;
 
@@ -406,7 +406,7 @@
 					else if (prepend)
 						this.#body.prepend(rows);
 					else
-						this.#body.append(rows);						
+						this.#body.append(rows);
 				}
 				else if (parent)
 					parent.after(rows);
@@ -428,10 +428,10 @@
 			row.addClass('expanded');
 			row.removeClass('collapsed');
 
-			const childer = this.#getRowChildren(row);
-			let count = childer.length;
+			const children = this.#getRowChildren(row);
+			let count = children.length;
 
-			childer.each((_, child) => {
+			children.each((_, child) => {
 				$(child).removeClass('grid-hidden');
 
 				if ($(child).hasClass('expanded'))
@@ -445,10 +445,10 @@
 			row.addClass('collapsed');
 			row.removeClass('expanded');
 
-			const childer = this.#getRowChildren(row);
-			let count = childer.length;
+			const children = this.#getRowChildren(row);
+			let count = children.length;
 
-			childer.each((_, child) => {
+			children.each((_, child) => {
 				$(child).addClass('grid-hidden');
 
 				if ($(child).hasClass('expanded'))
@@ -709,7 +709,7 @@
 						rows.each((_, row) => this.#selectRow($(row)));
 				}
 
-				this.#elem.trigger('grid:select', [ rows ]);
+				rows.length && this.#elem.trigger('grid:select', [ rows ]);
 			}
 		}
 
