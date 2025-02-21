@@ -607,7 +607,7 @@
 					});
 				}
 				else if ($.isPlainObject(row_data)) {
-					const row_id = data[this.#settings.id]
+					const row_id = row_data[this.#settings.id]
 					const row = this.#getRowById(row_id);
 
 					this.#updateRow(row, row_data, false);
