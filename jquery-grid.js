@@ -105,6 +105,9 @@
 					event.stopPropagation();
 				})
 				.on('click', 'tr', function () {
+					if (!['single', 'multiple'].includes(grid.#settings.selectionMode))
+						return;
+
 					const tr = $(this);
 
 					if (grid.#settings.selectColumnIndex === null)
