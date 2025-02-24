@@ -415,6 +415,13 @@
 				else
 					this.#body.append(rows);
 
+				this.#settings.expandColumnIndex !== undefined && $.each(rows, (_, row) => {
+					if (row.is('[row-id]:not([parent-id])')) {
+						row.hasClass('expanded') && this.#expandRow(row);
+						row.hasClass('collapsed') && this.#collapseRow(row);
+					}
+				});
+
 				this.#elem.trigger(prepend ? 'grid:prepend' : 'grid:append', [ rows ]);
 			}
 		}
