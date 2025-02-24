@@ -710,10 +710,13 @@
 					rows = this.rows();
 					if (selection instanceof $)
 						rows = rows.filter(selection);
-					else if (Array.isArray(selection))
-						selection = selection.map(String)
-					
-					rows = rows.filter((_, row) => selection.includes($(row).attr('row-id')));
+					else {
+						if (Array.isArray(selection))
+							selection = selection.map(String)
+						
+						rows = rows.filter((_, row) => selection.includes($(row).attr('row-id')));
+					}
+
 
 					if (action == 'remove')
 						rows.each((_, row) => this.#unselectRow($(row)));
