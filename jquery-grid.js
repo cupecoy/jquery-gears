@@ -533,11 +533,7 @@
 		rows(selector) {
 			const rows = this.#body.find('tr');
 
-			if (typeof selector === 'number')
-				return rows.eq(selector + 1);
-			else if (selector !== undefined)
-				return rows.filter(selector);
-			else if (Array.isArray(selector))
+			if (Array.isArray(selector))
 				return rows.filter((index, elem) =>
 					selector.some(item => {
 						if (typeof item === 'number')
@@ -548,6 +544,10 @@
 							return item == $(elem).attr('row-id');
 					})
 				);
+			else if (typeof selector === 'number')
+				return rows.eq(selector + 1);
+			else if (selector !== undefined)
+				return rows.filter(selector);
 
 			return rows;
 		}
