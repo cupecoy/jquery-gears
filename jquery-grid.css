@@ -41,7 +41,7 @@
 					cursor: pointer;
 				}
 			}
-			& input {
+			& input:not([type=radio], [type=checkbox]) {
 				width: 100%;
 				box-sizing: border-box;
 			}
