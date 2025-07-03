@@ -344,11 +344,10 @@
 		message: function() {
 			const a = Array.prototype.slice.call(arguments);
 
-			var f = window.alert;
 			var k = undefined;
 			var m = a.shift();
 			if (typeof m === 'boolean')
-				f = window.confirm, k = m, m = a.shift();
+				k = m, m = a.shift();
 
 			var v = this.element.data('title') || this.element.attr('title') || (this.element.attr('name') || 'field').toUpperCase();
 			for (var i = 0; v !== undefined; ++i) {
@@ -356,7 +355,18 @@
 				v = a.shift();
 			}
 
-			return k === f(m) && this.element.trigger('focus') && true;
+			const f = this.renderMessage;
+
+			return k === f(m, (typeof m === 'boolean'), this.element) && this.element.trigger('focus') && true;
+		},
+
+		renderMessage: function(text, isConfirm = false, elem) {
+			return isConfirm ? window.confirm(text) : window.alert(text);
+		},
+
+		setMessageRenderer: function(callback) {
+			if (typeof callback === 'function')
+				this.renderMessage = callback;
 		},
 
 		debug_: function() {
