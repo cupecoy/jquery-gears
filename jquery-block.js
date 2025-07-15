@@ -122,52 +122,44 @@
 			if (!data)
 				__create.apply(self);
 
-			if ($.isPlainObject(m)) {
-				const { items, instances } = m;
+			if (m.constructor === {}.constructor) {
+                const {items, instances} = m;
 
-				if (items !== undefined) {
-					const a = __items.apply(self, [items]);
-					r = $(r).add(a); // TODO: find another solution to collect results
-				}
+                if (items !== undefined) {
+                    const a = __items.apply(self, [items]);
+                    r = $(r).add(a); // TODO: find another solution to collect results
+                }
 
-				if (instances !== undefined && $.isPlainObject(instances)) {
-					const a = __instances.apply(self, [instances]);
-					r = $(r).add(a);
-				}
+                if (instances !== undefined && instances.constructor === {}.constructor) {
+                    const a = __instances.apply(self, [instances]);
+                    r = $(r).add(a);
+                }
 
-				if (instances === undefined && items === undefined) {
-					const a = __instances.apply(self, [m]);
-					r = $(r).add(a);
-				}
+                if (instances === undefined && items === undefined) {
+                    const a = __instances.apply(self, [m]);
+                    r = $(r).add(a);
+                }
 
-				return;
-			}
-			else if (m !== undefined) {
-				data = self.data('block');
+                return;
+            } else if (m !== undefined) {
+                data = self.data("block");
 
-				if (FUNCTIONS[m]) {
-					const a = FUNCTIONS[m].apply(self, p);
-					r = $(r).add(a);
-				}
-				else if (data.instances[m]) {
-					self.trigger(`block:${m}`, p);
+                if (FUNCTIONS[m]) {
+                    const a = FUNCTIONS[m].apply(self, p);
+                    r = $(r).add(a);
+                } else if (data.instances[m]) {
+                    self.trigger(`block:${m}`, p);
 
-					const a = data.instances[m].apply(self, p);
+                    const a = data.instances[m].apply(self, p);
 
-					if ($.isPlainObject(a))
-						r = { ...(r || {}), ...a };
-					else
-						r = a;
-				}
-				else if (data[m] !== undefined) {
-					return data[m];
-				}
-				else
-					r = undefined;
-			}
-			else {
-				r = $(r).add(self);
-			}
+                    if ($.isPlainObject(a)) r = {...(r || {}), ...a};
+                    else r = a;
+                } else if (data[m] !== undefined) {
+                    return data[m];
+                } else r = undefined;
+            } else {
+                r = $(r).add(self);
+            }
 		});
 
 		return r;
