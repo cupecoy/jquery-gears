@@ -100,6 +100,9 @@ $.widget('f.screen', {
 			currentScreen = this;
 			currentScreen._trigger('show', undefined, params);
 		}
+
+		// TODO: delete $.app.ready() call from here and call it manually when application is ready to use
+		$.app?.ready && $.app.ready();
 	},
 
 	hide: function() {
