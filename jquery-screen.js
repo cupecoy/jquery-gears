@@ -98,11 +98,22 @@ $.widget('f.screen', {
 
 			previousScreen = currentScreen;
 			currentScreen = this;
-			currentScreen._trigger('show', undefined, params);
-		}
 
-		// TODO: delete $.app.ready() call from here and call it manually when application is ready to use
-		$.app?.ready && $.app.ready();
+			// hide all elements until screen is ready
+			currentScreen._loading();
+			// trigger show event and when it is done - mark screen as ready
+			// use Promise.resolve to handle both sync and async results
+			// in case of async - screen will be marked as ready when promise is resolved
+			// in case of sync - screen will be marked as ready immediately
+			// also, any errors will not prevent marking screen as ready
+
+			debugger;
+			const res = currentScreen._triggerHandler('show', undefined, params);
+			if (res && typeof res?.always === 'function')
+				res.always(() => currentScreen._ready());
+			else
+				currentScreen._ready();
+		}
 	},
 
 	hide: function() {
@@ -130,6 +141,40 @@ $.widget('f.screen', {
 	active_: function() {
 		const active = $(document.activeElement).filter(':input');
 		return active.parents('.' + this.widgetFullName + '-canvas').index(this.element) > -1 ? active : null;
+	},
+
+	_loading: function() {
+		this.element.removeClass(this.widgetFullName + '--ready');
+
+		this.element.addClass(this.widgetFullName + '--loading');
+
+		const loader = $(`<div class="${this.widgetFullName}__loader"></div>`).html('<div></div>'.repeat(12));
+		this.element.append(loader);
+	},
+
+	_ready: function() {
+		const loader = this.element.find(`.${this.widgetFullName}__loader`);
+		loader.remove()
+
+		this.element.removeClass(this.widgetFullName + '--loading');
+
+		this.element.addClass(this.widgetFullName + '--ready');
+	},
+
+	_triggerHandler: function(type, event, data) {
+		let callback = this.options[type];
+
+		if (callback && typeof callback === "function") {
+			const result = callback.call(this.element[0], event, ...data);
+			if (result !== undefined) {
+				return result;
+			}
+		}
+
+		event = $.Event(event);
+		event.type = (type === null ? "" : type.toLowerCase());
+
+		return this.element.triggerHandler(event, data);
 	}
 });
 
