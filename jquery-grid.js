@@ -114,6 +114,8 @@
 						grid.#toggleRow(tr);
 					else if (grid.#settings.selectionMode == 'single')
 						grid.#selectRow(tr);
+					else
+						return;
 
 					grid.#elem.trigger('grid:select', [tr]);
 				})
