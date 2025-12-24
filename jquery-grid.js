@@ -56,7 +56,7 @@
 
 		constructor(elem, settings) {
 			this.#elem = elem;
-			this.#settings = $.extend(this.#settings, settings);
+			this.setSettings(settings);
 
 			this.#wrapper = this.#elem.parent().addClass('grid-wrapper');
 			if (this.#settings.fixedHeader)
@@ -72,6 +72,10 @@
 			this.#initFoot();
 			this.#initColumns();
 			this.#initLookups();
+		}
+
+		setSettings(settings) {
+			this.#settings = $.extend(this.#settings, settings);
 		}
 
 		#initHead() {
@@ -793,7 +797,13 @@
 		$(this).each(function () {
 			const t = $(this);
 			if ($.isPlainObject(method) || !method) {
-				t.data('grid', new Grid(t, method));
+				if (t.data('grid') === undefined) {
+					t.data('grid', new Grid(t, method));
+				}
+				else {
+					t.data('grid').setSettings(method);
+				}
+
 				return true;
 			}
 			else if (t.data('grid') === undefined)
