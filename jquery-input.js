@@ -817,6 +817,35 @@
 					.on('blur.input', function () {
 						self.debug_('blur');
 						self.focused_ = false;
+
+						// strict (default) = current behavior; non-strict adopts the first
+						if (self.element.data('strict') === false) {
+							const typed = self.normalize_(self.element.prop('value'));
+
+							// skip if empty, or the value already resolves to a real entry
+							if (typed && !(self.value_.data && self.get() == typed)) {
+								const field = self.element.data('field');
+								self.source(self.element.data('dropdown') || '', typed, function (c) {
+									const first = c && c.length ? c[0] : null;
+									const code  = first && self.normalize_(field ? first[field] : (first.value || first.code));
+
+									// prefix guard: the first match must actually start with what was typed
+									if (first && code && code.toUpperCase().indexOf(typed.toUpperCase()) === 0) {
+										self.set_value_(code, first);          // adopt the first match
+									}
+									else {
+										// no valid match: stale entry, so the validator flags it instead of the
+										self.value_ = { value: typed, data: null };
+										self.value_.promise = Promise.resolve(null);
+									}
+
+									self.update_();
+									self.element.trigger('change');        // fire dependent logic + validation
+								}, self.ctx_ = self.get_ctx_());
+								return; // update_ runs in the async callback
+							}
+						}
+
 						self.update_();
 					})
 					.autocomplete({
