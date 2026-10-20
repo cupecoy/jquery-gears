@@ -167,8 +167,13 @@
 
 			grid.#lookups = grid.#head.find('input[name]')
 				.on('focus', function () {
-					const self = $(this);
-					setTimeout(function () { self.select(); });
+					const input = this;
+					// Chrome's select() also focuses the input; if focus already moved on,
+					// a deferred select() would steal it back and start a focus ping-pong loop.
+					setTimeout(function () {
+						if (document.activeElement === input)
+							input.select();
+					});
 				})
 				.on('keydown', function (event) {
 					const self = $(this);
