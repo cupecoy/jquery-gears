@@ -694,7 +694,7 @@
 			const lookup = this.#lookups.get().reduce((acc, tr) => {
 				const name = $(tr).attr('name');
 				const value = $(tr).val();
-				if (value || value === 0)
+				if (value != null && String(value).trim() !== '')
 					acc[name] = value;
 
 				return acc;
